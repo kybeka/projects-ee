@@ -5,6 +5,13 @@ const csv = require('csv-writer').createObjectCsvWriter;
 const app = express();
 const port = 3000;
 
+// Add these lines at the top of your index.js file
+
+const path = require('path');
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Serve static files (like stylesheets)
@@ -24,41 +31,71 @@ const csvWriter = csv({
   ],
 });
 
+
+
 // Define routes
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/instructions.html');
 });
 
+const n = 5; // number of tasks
+const participants = [];
+
 app.post('/experiment', (req, res) => {
+    // Extract participant information from the form
     const participantId = req.body.participantId;
     const demographics = req.body; // Add more fields as needed
   
-    // Process demographics data
+    // Store participant data in memory (you may want to use a database in a real application)
+    participants.push({ participantId, demographics });
   
-    // Perform n tasks
-    for (let taskNumber = 1; taskNumber <= n; taskNumber++) {
-      const style = taskNumber % 2 === 0 ? 'camelCase' : 'kebab-case';
-      const sentence = generateRandomSentence(); // Implement this function
-      const identifiers = generateIdentifiers(sentence, style); // Implement this function
-  
-      // Render experiment.html with data
-      res.render('experiment', {
-        participantId,
-        taskNumber,
-        style,
-        sentence,
-        identifiers,
-      });
-    }
+    // Redirect to the first task of the experiment and pass the participantId as a query parameter
+    res.redirect(`/experiment/task/1?participantId=${participantId}`);
   });
+
+// Add a route to handle experiment tasks
+app.get('/experiment/task/:taskNumber', (req, res) => {
+  const taskNumber = parseInt(req.params.taskNumber);
+  const participantId = req.query.participantId; // Retrieve participantId from query parameter
+  console.log("pI: " + participantId);
+
+  // Ensure the participant exists
+//   const participant = participants.find(p => p.participantId === participantId);
+//   if (!participant) {
+//     res.status(404).send('Participant not found');
+//     return;
+//   }
+
+  // Perform n tasks
+  if (taskNumber <= n) {
+    const style = taskNumber % 2 === 0 ? 'camelCase' : 'kebab-case';
+    const sentence = generateRandomSentence(); // Implement this function
+    const identifiers = generateIdentifiers(sentence, style); // Implement this function
+
+    // Render experiment.html with data
+    res.render('./experiment', {
+      participantId,
+      taskNumber,
+      style,
+      sentence,
+      identifiers,
+    });
+
+  } else {
+    // If all tasks are completed, redirect to a thank-you page
+    res.redirect('/thank-you');
+  }
+});
   
 
 app.get('/thank-you', (req, res) => {
   res.send('Thank you for participating!');
 });
 
-
-
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
 
 
 // Add these functions in your index.js file
@@ -109,12 +146,3 @@ function generateRandomSentence() {
   function kebabCase(str) {
     return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
   }
-  
-
-
-
-// Start the server
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
-
