@@ -5,17 +5,15 @@ const csv = require('csv-writer').createObjectCsvWriter;
 const app = express();
 const port = 3000;
 
-// Add these lines at the top of your index.js file
-
 const path = require('path');
+const { start } = require('repl');
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// Serve static files (like stylesheets)
 app.use(express.static('public'));
+
 
 // Set up the CSV writer
 const csvWriter = csv({
@@ -32,7 +30,6 @@ const csvWriter = csv({
 });
 
 
-
 // Define routes
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/instructions.html');
@@ -40,6 +37,8 @@ app.get('/', (req, res) => {
 
 const n = 5; // number of tasks
 const participants = [];
+const d = new Date();
+startTime = 0;
 
 app.post('/experiment', (req, res) => {
     // Extract participant information from the form
@@ -57,7 +56,7 @@ app.post('/experiment', (req, res) => {
 app.get('/experiment/task/:taskNumber', (req, res) => {
   const taskNumber = parseInt(req.params.taskNumber);
   const participantId = req.query.participantId; // Retrieve participantId from query parameter
-  console.log("pI: " + participantId);
+  console.log("Participant ID: " + participantId);
 
   // Ensure the participant exists
 //   const participant = participants.find(p => p.participantId === participantId);
@@ -69,8 +68,12 @@ app.get('/experiment/task/:taskNumber', (req, res) => {
   // Perform n tasks
   if (taskNumber <= n) {
     const style = taskNumber % 2 === 0 ? 'camelCase' : 'kebab-case';
-    const sentence = generateRandomSentence(); // Implement this function
-    const identifiers = generateIdentifiers(sentence, style); // Implement this function
+    const sentence = generateRandomSentence();
+    const identifiers = generateIdentifiers(sentence, style);
+    
+ 
+    startTime = d.getTime();
+    
 
     // Render experiment.html with data
     res.render('./experiment', {
@@ -81,12 +84,44 @@ app.get('/experiment/task/:taskNumber', (req, res) => {
       identifiers,
     });
 
+    participant.tasks.push ({
+      taskNumber,
+      style,
+      sentence,
+      startTime,
+    });
+
   } else {
     // If all tasks are completed, redirect to a thank-you page
     res.redirect('/thank-you');
   }
 });
   
+
+app.post('/experiment/submit/:taskNumber', (req, res) => {
+  const taskNumber = parseInt(req.params.taskNumber);
+  const participantId = req.body.participantId;
+  const participant = participants.find(p => p.participantId === participantId);
+
+  // if (!participant) {
+  //   res.status(404).send('Participant not found');
+  //   return;
+  // }
+
+  // Record the end time for the task
+  const endTime = d.getTime();
+
+  // Calculate the time taken for the task
+  // const startTime = participant.tasks.find(task => task.taskNumber === taskNumber).startTime;
+  const timeTaken = (endTime - startTime);
+
+  console.log("time Taken: " + timeTaken);
+
+  // Store the time taken for the task
+  // participant.tasks.find(task => task.taskNumber === taskNumber).timeTaken = timeTaken;
+
+  res.redirect(`/experiment/task/${taskNumber + 1}?participantId=${participantId}`);
+});
 
 app.get('/thank-you', (req, res) => {
   res.send('Thank you for participating!');
