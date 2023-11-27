@@ -1,0 +1,26 @@
+<!-- experiment.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="/styles.css">
+  <title>Experiment</title>
+</head>
+<body>
+  <h1>Task {{ taskNumber }}</h1>
+  <p>Sentence: {{ sentence }}</p>
+  <p>Identifiers:</p>
+  <form action="/experiment" method="post">
+    {{#identifiers}}
+      <input type="radio" name="selectedIdentifier" value="{{ identifier }}">
+      <label for="{{ identifier }}">{{ identifier }}</label><br>
+    {{/identifiers}}
+    <input type="hidden" name="participantId" value="{{ participantId }}">
+    <input type="hidden" name="taskNumber" value="{{ taskNumber }}">
+    <input type="hidden" name="style" value="{{ style }}">
+    <!-- Add more hidden fields for demographics data -->
+    <button type="submit">Next</button>
+  </form>
+</body>
+</html>

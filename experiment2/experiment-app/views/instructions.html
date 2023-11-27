@@ -1,0 +1,33 @@
+<!-- views/instructions.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Experiment Instructions</title>
+  <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+<body>
+  <h1>Welcome to the Experiment</h1>
+  <p>
+    Thank you for participating in our experiment. The goal is to test your ability to identify specific identifiers
+    in different coding styles. Follow the instructions below:
+  </p>
+  <ol>
+    <li>Fill out the demographics form below.</li>
+    <li>You will be presented with sentences composed of two or more words, such as "move south".</li>
+    <li>You'll see a set of identifiers, one of which corresponds to the sentence you saw.</li>
+    <li>Select the identifier that matches the given sentence.</li>
+    <li>Complete a series of tasks, some involving camelCase and others kebab-case.</li>
+  </ol>
+  <h2>Demographics Form</h2>
+  <form action="/experiment" method="post">
+    <label for="participantId">Participant ID:</label>
+    <input type="text" id="participantId" name="participantId" required>
+
+    <!-- Add more demographic fields as needed -->
+    
+    <button type="submit">Start Experiment</button>
+  </form>
+</body>
+</html>
