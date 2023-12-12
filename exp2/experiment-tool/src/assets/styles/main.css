@@ -1,0 +1,15 @@
+/* src/assets/styles/main.css */
+
+/* Import Fira Sans font */
+@font-face {
+    font-family: 'Fira Sans';
+    src: url('../fonts/FiraSans-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  /* Global styles */
+  body {
+    font-family: 'Fira Sans', sans-serif;
+  }
+  
