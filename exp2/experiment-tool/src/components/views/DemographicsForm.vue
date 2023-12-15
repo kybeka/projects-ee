@@ -1,5 +1,5 @@
 <template>
-  <div class="main-form">
+  <div class="demo-form">
     <h2>Demographics Form</h2>
     <form @submit.prevent="submitForm">
       <div class="form-row">
@@ -84,7 +84,7 @@ export default {
       if (this.isFormValid) {
         this.submitted = true;
         // Proceed to the next page
-        this.$router.push('/experiment');
+        this.$router.push('/warmup');
       }
     },
   },
@@ -92,7 +92,7 @@ export default {
 </script>
 
 <style scoped>
-.main-form {
+.demo-form {
   display: flex;
   flex-direction: column;
   align-items: center;

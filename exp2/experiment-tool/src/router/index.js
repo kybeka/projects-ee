@@ -3,6 +3,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomePage from "@/components/views/HomePage.vue";
 import DemographicsForm from "@/components/views/DemographicsForm.vue";
 import ExperimentPage from "@/components/views/ExperimentPage.vue";
+import WarmUp from "@/components/views/WarmUpPage.vue";
+
 
 
 const routes = [
@@ -17,6 +19,10 @@ const routes = [
     { 
         path: "/experiment", 
         component: ExperimentPage 
+    },
+    {
+        path: "/warmup",
+        component: WarmUp
     },
 ];
 
