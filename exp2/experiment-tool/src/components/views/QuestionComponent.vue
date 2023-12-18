@@ -1,16 +1,17 @@
+<!-- QuestionComponent.vue -->
 <template>
   <div class="question">
     <p class="question-text">{{ questionText }}</p>
     <div class="options-container">
       <div class="options-grid">
-      <OptionComponent v-for="(option, index) in shuffledOptions" :key="index" :value="option"
-        :correct-answer="isCorrectOption(option)" :selected="isSelectedOption(option, question.selectedOption)"
-        @option-clicked="handleOptionClicked(option)" />
-    </div>
+        <OptionComponent v-for="(option, index) in shuffledOptions" :key="index" :value="option"
+          :correct-answer="isCorrectOption(option)" :selected="isSelectedOption(option, question.selectedOption)"
+          @option-clicked="handleOptionClicked(option)" />
+      </div>
     </div>
 
     <!-- Result message -->
-    <p v-if="question.submitted && showResult">
+    <p v-if="question.submitted && showResult && showResultMessage">
       <span :class="{ 'correct-answer': question.correct, 'incorrect-answer': !question.correct }">
         <span v-if="question.correct">&#10004;</span>
         <span v-else>&#10008;</span>
@@ -23,11 +24,19 @@
     <!-- Next Question button -->
     <div class="next-button">
       <button type="button" class="next-start" v-if="question.submitted && showResult" @click="moveToNextQuestion"
-      :disabled="!allQuestionsAnswered && !question.submitted">
-      {{ allQuestionsAnswered ? 'Start the Experiment!' : 'Next Question' }}
-    </button>
+        :disabled="!allQuestionsAnswered && !question.submitted">
+        {{ allQuestionsAnswered ? 'Start the Experiment!' : 'Next Question' }}
+      </button>
     </div>
-   
+
+    <!-- Next Question button -->
+    <!-- <div class="next-button">
+      <button type="button" class="next-start" v-if="question.submitted && showResult && !allQuestionsAnswered"
+        @click="moveToNextQuestion" :disabled="!allQuestionsAnswered && !question.submitted">
+        {{ isWarmUpPage ? 'Start the Experiment!' : 'Next Question' }}
+      </button>
+    </div> -->
+
   </div>
 </template>
 
@@ -43,9 +52,17 @@ export default {
     warmUpQuestions: Array,
     allQuestionsAnswered: Boolean,
     currentQuestionIndex: Number,
+    showResultMessage: {
+      type: Boolean,
+      default: true,
+    },
+    score:{
+      type: Number,
+      default: 0,
+    },
   },
   computed: {
-    ...mapState(['warmUpQuestions']),
+    ...mapState(['questions', 'warmUpQuestions']),
     questionText() {
       return this.question.questionText;
     },
@@ -58,7 +75,7 @@ export default {
     console.log('QuestionComponent - question:', this.question);
     console.log('QuestionComponent - shuffledOptions:', this.shuffledOptions);
   },
-  
+
   data() {
     return {
       showResult: false,
@@ -81,16 +98,22 @@ export default {
     handleCurrentAnswerChecked() {
       if (!this.question.submitted) {
         // Check if the selected option is correct
+
         const isCorrect = this.isCorrectOption(this.question.selectedOption);
+
+        if (isCorrect) {
+          this.$emit('answer-checked', this.questionIndex, 1);
+        } else {
+          this.$emit('answer-checked', this.questionIndex, 0);
+        }
 
         // Emit the result to the parent component
         this.$emit('answer-checked', this.questionIndex, isCorrect);
 
-        // Show the result message
         this.showResult = true;
-        // this.disableCheckAnswer = true;
       }
     },
+
 
     moveToNextQuestion() {
       this.$emit('next-question');
@@ -106,6 +129,7 @@ export default {
 .question {
   text-align: center;
 }
+
 .question-text {
   font-size: 26px;
   font-weight: bold;
@@ -129,7 +153,8 @@ export default {
 }
 
 .option:hover {
-  background-color: #e0e0e0; /* Change the color as needed */
+  background-color: #e0e0e0;
+  /* Change the color as needed */
 }
 
 .next-start {

@@ -10,6 +10,12 @@
       :questionIndex="currentQuestionIndex" :warmupQuestions="warmUpQuestions"
       :allQuestionsAnswered="allQuestionsAnswered" :currentQuestionIndex="currentQuestionIndex"
       @answer-checked="handleAnswerChecked" @option-clicked="handleOptionClicked" @next-question="moveToNextQuestion" />
+
+      <!-- <router-link v-if="allQuestionsAnswered" :to="{ name: 'ExperimentPage' }">
+      <button type="button" class="next-start">
+        Start the Experiment!
+      </button>
+    </router-link> -->
   </div>
 </template>
 

@@ -1,3 +1,4 @@
+<!-- OptionComponent.vue -->
 <template>
   <div
     class="option"
