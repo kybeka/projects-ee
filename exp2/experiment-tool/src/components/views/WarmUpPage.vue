@@ -1,32 +1,28 @@
+<!-- WarmupPage.vue -->
 <template>
   <div class="submit-warmup">
     <h1>Welcome to the Warm-up</h1>
-    <p>Let's warm up with a set of questions designed to test your familiarity with different naming conventions in programming. In this session, we'll cover both camelCase and kebab-case.</p>
-    <p>For each question, you'll see four options. Pick the one that adheres to the specified naming convention. Once you've made your selection, click "Check answer" to check your answer!</p>
-    <div v-for="(question, index) in warmupQuestions" :key="index" class="question">
-      <p>{{ question.text }}</p>
-      <div v-for="(option, optionIndex) in shuffledOptions[index]" :key="optionIndex" class="option">
-        <input type="radio" :id="`q${index}o${optionIndex}`" :name="`question${index}`" v-model="question.selectedOption"
-          :value="option" />
-        <label :for="`q${index}o${optionIndex}`">{{ option }}</label>
-      </div>
-      <button type="button" @click="checkAnswer(question)">Check answer</button>
-      <p v-if="question.submitted">
-        <span :class="{ 'correct-answer': question.correct, 'incorrect-answer': !question.correct }">
-        <span v-if="question.correct">&#10004;</span>
-        <span v-else>&#10008;</span>
-      </span>
-        <span v-if="question.correct">Correct! Move on to the next question.</span>
-        <span v-else>Incorrect. Please try again.</span>
-      </p>
-    </div>
+    <p>... <!-- (Your introductory text) --></p>
+
+    <!-- Iterate through each question -->
+    <!-- <QuestionComponent v-if="currentQuestionIndex < warmupQuestions.length" :key="currentQuestionIndex"
+      :question="warmupQuestions[currentQuestionIndex]" :shuffledOptions="shuffledOptions[currentQuestionIndex]"
+      :questionIndex="currentQuestionIndex" :warmupQuestions="warmupQuestions" @answer-checked="handleAnswerChecked" @option-clicked="handleOptionClicked"
+      @next-question="moveToNextQuestion" /> -->
+    <QuestionComponent v-if="currentQuestionIndex < warmupQuestions.length" :key="currentQuestionIndex"
+      :question="warmupQuestions[currentQuestionIndex]" :shuffledOptions="shuffledOptions[currentQuestionIndex]"
+      :questionIndex="currentQuestionIndex" :warmupQuestions="warmupQuestions"
+      :allQuestionsAnsweredCorrectly="allQuestionsAnsweredCorrectly" :currentQuestionIndex="currentQuestionIndex"
+      @answer-checked="handleAnswerChecked" @option-clicked="handleOptionClicked" @next-question="moveToNextQuestion" />
+
 
     <button type="button" @click="submitForm" :disabled="!allQuestionsAnsweredCorrectly">Start the Experiment!</button>
   </div>
 </template>
 
-
 <script>
+import QuestionComponent from "@/components/views/QuestionComponent.vue"; // Update the path accordingly
+
 export default {
   data() {
     return {
@@ -37,6 +33,7 @@ export default {
           correctAnswer: "user-name",
           selectedOption: null,
           correct: false,
+          submitted: false,
         },
         {
           text: "total cases",
@@ -44,6 +41,7 @@ export default {
           correctAnswer: "totalCases",
           selectedOption: null,
           correct: false,
+          submitted: false,
         },
         {
           text: "floor number",
@@ -51,6 +49,7 @@ export default {
           correctAnswer: "floorNumber",
           selectedOption: null,
           correct: false,
+          submitted: false,
         },
         {
           text: "points scored",
@@ -58,6 +57,7 @@ export default {
           correctAnswer: "points-scored",
           selectedOption: null,
           correct: false,
+          submitted: false,
         },
         {
           text: "dice number",
@@ -65,10 +65,10 @@ export default {
           correctAnswer: "diceNumber",
           selectedOption: null,
           correct: false,
+          submitted: false,
         },
-
       ],
-      submitted: false,
+      currentQuestionIndex: 0,
     };
   },
   computed: {
@@ -81,16 +81,41 @@ export default {
   },
   methods: {
     submitForm() {
-      if (this.allQuestionsAnsweredCorrectly) {
+      console.log('allQuestionsAnsweredCorrectly:', this.allQuestionsAnsweredCorrectly);
+      console.log('currentQuestionIndex:', this.currentQuestionIndex);
+      if (this.allQuestionsAnsweredCorrectly && this.currentQuestionIndex === this.warmupQuestions.length) {
+        // Navigate to the "/experiment" page
+        this.$router.push('/experiment');
+      } else {
+        // Move to the next question
+        this.currentQuestionIndex++;
+      }
+    },
+    handleOptionClicked(option) {
+      // Update the current question using reactivity
+      this.warmupQuestions[this.currentQuestionIndex].selectedOption = option;
+    },
+    handleAnswerChecked(index, isCorrect) {
+      if (index >= 0 && index < this.warmupQuestions.length) {
+        this.warmupQuestions[index] = {
+          ...this.warmupQuestions[index],
+          correct: isCorrect,
+          submitted: true,
+        };
+      } else {
+        console.error(`Invalid question index: ${index}`);
+      }
+    },
+    moveToNextQuestion() {
+      // Move to the next question
+      this.currentQuestionIndex++;
+
+      // Check if all questions are answered correctly
+      if (this.allQuestionsAnsweredCorrectly && this.currentQuestionIndex === this.warmupQuestions.length) {
         // Navigate to the "/experiment" page
         this.$router.push('/experiment');
       }
     },
-    checkAnswer(question) {
-      question.correct = question.selectedOption === question.correctAnswer;
-      question.submitted = true;
-    },
-    // Helper method to shuffle an array using the Fisher-Yates algorithm
     shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -99,29 +124,12 @@ export default {
       return array;
     },
   },
+  components: {
+    QuestionComponent,
+  },
 };
 </script>
 
 <style scoped>
-
-
-.question {
-  margin-bottom: 20px;
-}
-
-.option {
-  margin-bottom: 10px;
-}
-
-.correct-answer {
-  color: green;
-  font-size: 1.5em;
-  margin-right: 5px;
-}
-
-.incorrect-answer {
-  color: red;
-  font-size: 1.5em;
-  margin-right: 5px;
-}
+/* Add your styling here */
 </style>
