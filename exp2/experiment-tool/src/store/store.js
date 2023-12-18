@@ -103,7 +103,7 @@ export default createStore({
         correctAnswerIndex: 0,
       },
     ],
-\    
+
   },
   mutations: {
     setParticipantID(state, id) {
