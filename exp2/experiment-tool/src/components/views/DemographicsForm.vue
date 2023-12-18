@@ -106,6 +106,11 @@ export default {
 </script>
 
 <style scoped>
+
+h2 {
+  font-size: 40px;
+  padding: 20px;
+}
 .demo-form {
   display: flex;
   flex-direction: column;

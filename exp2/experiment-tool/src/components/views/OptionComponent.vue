@@ -1,4 +1,3 @@
-<!-- OptionComponent.vue -->
 <template>
   <div
     class="option"
@@ -30,10 +29,13 @@ export default {
   display: inline-block;
   margin: 5px;
   padding: 10px;
-  border: 1px solid #ccc;
   cursor: pointer;
   text-align: center;
+  border: none;
+  font-size: 20px;
 }
 
-/* Add your other styling as needed */
+.selected-option {
+  background-color: #aaf;
+}
 </style>

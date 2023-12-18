@@ -1,13 +1,13 @@
-<!-- QuestionComponent.vue -->
 <template>
   <div class="question">
-    <p>{{ question.text }}</p>
-    <div class="options-grid">
+    <p class="question-text">{{ questionText }}</p>
+    <div class="options-container">
+      <div class="options-grid">
       <OptionComponent v-for="(option, index) in shuffledOptions" :key="index" :value="option"
         :correct-answer="isCorrectOption(option)" :selected="isSelectedOption(option, question.selectedOption)"
         @option-clicked="handleOptionClicked(option)" />
     </div>
-    <button type="button" @click="handleCurrentAnswerChecked" :disabled="disableCheckAnswer">Check answer</button>
+    </div>
 
     <!-- Result message -->
     <p v-if="question.submitted && showResult">
@@ -16,34 +16,49 @@
         <span v-else>&#10008;</span>
       </span>
       <span v-if="question.correct">Correct! </span>
-      <span v-else>Incorrect. Please try again.</span>
+      <!-- put the correct answer later -->
+      <span v-else>Incorrect, the correct answer is {{ correctAnswerText }}.</span>
     </p>
 
     <!-- Next Question button -->
-    <button type="button" @click="moveToNextQuestion" v-if="question.submitted && showResult">
-      Next Question
+    <div class="next-button">
+      <button type="button" class="next-start" v-if="question.submitted && showResult" @click="moveToNextQuestion"
+      :disabled="!allQuestionsAnswered && !question.submitted">
+      {{ allQuestionsAnswered ? 'Start the Experiment!' : 'Next Question' }}
     </button>
-
-    <!-- <button type="button" @click="submitForm" v-else-if="questionIndex == warmupQuestions.length" :disabled="!allQuestionsAnsweredCorrectly">
-      Start the Experiment!
-    </button> -->
+    </div>
+   
   </div>
 </template>
 
-
-
 <script>
 import OptionComponent from "@/components/views/OptionComponent.vue";
+import { mapState } from 'vuex';
 
 export default {
   props: {
     question: Object,
     shuffledOptions: Array,
     questionIndex: Number,
-    warmupQuestions: Array,
-    allQuestionsAnsweredCorrectly: Boolean,
+    warmUpQuestions: Array,
+    allQuestionsAnswered: Boolean,
     currentQuestionIndex: Number,
   },
+  computed: {
+    ...mapState(['warmUpQuestions']),
+    questionText() {
+      return this.question.questionText;
+    },
+    correctAnswerText() {
+      // Assuming correctAnswerIndex is the index of the correct answer
+      return this.question.options[this.question.correctAnswerIndex];
+    },
+  },
+  created() {
+    console.log('QuestionComponent - question:', this.question);
+    console.log('QuestionComponent - shuffledOptions:', this.shuffledOptions);
+  },
+  
   data() {
     return {
       showResult: false,
@@ -54,16 +69,17 @@ export default {
     handleOptionClicked(option) {
       if (!this.question.submitted) {
         this.$emit('option-clicked', option);
+        this.handleCurrentAnswerChecked();
       }
     },
     isCorrectOption(option) {
-      return option === this.question.correctAnswer;
+      return option === this.question.options[this.question.correctAnswerIndex];
     },
     isSelectedOption(option, selectedOption) {
       return option === selectedOption;
     },
     handleCurrentAnswerChecked() {
-      if (!this.question.submitted && !this.disableCheckAnswer) {
+      if (!this.question.submitted) {
         // Check if the selected option is correct
         const isCorrect = this.isCorrectOption(this.question.selectedOption);
 
@@ -72,24 +88,12 @@ export default {
 
         // Show the result message
         this.showResult = true;
-        this.disableCheckAnswer = true;
+        // this.disableCheckAnswer = true;
       }
     },
 
     moveToNextQuestion() {
-      // Move to the next question
-      // this.currentQuestionIndex++;
       this.$emit('next-question');
-
-      // Hide the result message for the next question
-      this.showResult = false;
-      this.disableCheckAnswer = false;
-
-      // Check if all questions are answered correctly
-      if (this.allQuestionsAnsweredCorrectly && this.currentQuestionIndex + 1 === this.warmupQuestions.length) {
-        // Navigate to the "/experiment" page or show a "Start the Experiment" button
-        this.$router.push('/experiment');
-      }
     },
   },
   components: {
@@ -102,16 +106,48 @@ export default {
 .question {
   text-align: center;
 }
+.question-text {
+  font-size: 26px;
+  font-weight: bold;
+  color: darkred;
+}
 
 .options-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(100px, 1fr));
   gap: 10px;
   justify-content: center;
 }
 
+.options-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
 .selected-option {
-  /* Define your selected option styles here */
   background-color: #aaf;
+}
+
+.option:hover {
+  background-color: #e0e0e0; /* Change the color as needed */
+}
+
+.next-start {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: #fff;
+  font-size: large;
+  font-weight: bold;
+  text-decoration: none;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+div .next-button {
+  display: flex;
+  justify-content: center;
 }
 </style>

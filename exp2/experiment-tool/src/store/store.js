@@ -1,8 +1,6 @@
 import { createStore } from 'vuex';
 import { v4 as uuidv4 } from 'uuid';
 
-
-
 export default createStore({
   state: {
     participantID: null,
@@ -23,7 +21,7 @@ export default createStore({
       },
       {
         id: 'warmUpQuestion3',
-        questionText: 'room number',
+        questionText: 'floor number',
         options: ['floorNumber', 'florNumber', 'floorNunber', 'floorNumder'],
         correctAnswerIndex: 0,
       },
@@ -103,7 +101,6 @@ export default createStore({
         correctAnswerIndex: 0,
       },
     ],
-\    
   },
   mutations: {
     setParticipantID(state, id) {

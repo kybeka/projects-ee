@@ -2,102 +2,45 @@
 <template>
   <div class="submit-warmup">
     <h1>Welcome to the Warm-up</h1>
-    <p>... <!-- (Your introductory text) --></p>
-
-    <QuestionComponent 
-      v-if="currentQuestionIndex < warmupQuestions.length" 
-      :key="currentQuestionIndex"
-      :question="warmupQuestions[currentQuestionIndex]" 
-      :shuffledOptions="getShuffledOptions(currentQuestionIndex)"
-      :questionIndex="currentQuestionIndex" 
-      :warmupQuestions="warmupQuestions"
-      :allQuestionsAnswered="allQuestionsAnswered" 
-      :currentQuestionIndex="currentQuestionIndex"
-      @answer-checked="handleAnswerChecked" 
-      @option-clicked="handleOptionClicked" 
-      @next-question="submitForm" />
-
-      <button
-      type="button"
-      @click="submitForm"
-      :disabled="!allQuestionsAnswered"
-      v-else-if="questionIndex == warmupQuestions.length"
-    >
-      {{ questionIndex === warmupQuestions.length ? 'Start the Experiment!' : 'Next Question' }}
-    </button>
-
+    <p>Let's warm up with a set of questions designed to test your familiarity with different naming conventions in
+      programming. In this session, we'll cover both camelCase and kebab-case</p>
+    <p>For each question, you'll see four options. Pick the one that adheres to the specified naming convention.</p>
+    <QuestionComponent v-if="currentQuestionIndex < warmUpQuestions.length" :key="currentQuestionIndex"
+      :question="warmUpQuestions[currentQuestionIndex]" :shuffledOptions="shuffledOptions[currentQuestionIndex]"
+      :questionIndex="currentQuestionIndex" :warmupQuestions="warmUpQuestions"
+      :allQuestionsAnswered="allQuestionsAnswered" :currentQuestionIndex="currentQuestionIndex"
+      @answer-checked="handleAnswerChecked" @option-clicked="handleOptionClicked" @next-question="moveToNextQuestion" />
   </div>
 </template>
 
 <script>
-import QuestionComponent from "@/components/views/QuestionComponent.vue";
+import QuestionComponent from "@/components/views/QuestionComponent.vue"; // Update the path accordingly
+import { mapState } from "vuex";
 
 export default {
   data() {
     return {
-      warmupQuestions: [
-        {
-          text: "Choose the correct option in kebab-case for 'user name'",
-          options: ["user-name", "user-nane", "usor-name", "user-nace"],
-          correctAnswer: "user-name",
-          selectedOption: null,
-          correct: false,
-          submitted: false,
-        },
-        {
-          text: "total cases",
-          options: ["totalCases", "totalCasas", "totatCases", "totalCaser"],
-          correctAnswer: "totalCases",
-          selectedOption: null,
-          correct: false,
-          submitted: false,
-        },
-        {
-          text: "floor number",
-          options: ["floorNumber", "florNumber", "floorNuber", "floorNumder"],
-          correctAnswer: "floorNumber",
-          selectedOption: null,
-          correct: false,
-          submitted: false,
-        },
-        {
-          text: "points scored",
-          options: ["points-scored", "points-stored", "poinst-scored", "point-scored"],
-          correctAnswer: "points-scored",
-          selectedOption: null,
-          correct: false,
-          submitted: false,
-        },
-        {
-          text: "dice number",
-          options: ["diceNumber", "diceNumder", "diseNumber", "diceNunber"],
-          correctAnswer: "diceNumber",
-          selectedOption: null,
-          correct: false,
-          submitted: false,
-        },
-      ],
       currentQuestionIndex: 0,
-      shuffledOptionsOnce:true,
-    };
+    }
   },
   computed: {
+    ...mapState(['warmUpQuestions']),
+
+    shuffledOptions() {
+      return this.warmUpQuestions.map((question) => this.shuffleArray(question.options.slice()));
+    },
     allQuestionsAnswered() {
-      return this.warmupQuestions.every((question) => question.submitted);
+      return this.warmUpQuestions.every((question) => question.submitted);
     },
   },
+  created() {
+    console.log('warmUpQuestions:', this.warmUpQuestions);
+  },
   methods: {
-    getShuffledOptions(questionIndex) {
-      if (this.shuffleOptionsOnce) {
-        this.shuffleOptionsOnce = false;
-        return this.shuffleArray([...new Set(this.warmupQuestions[questionIndex].options.slice())]);
-      }
-      return this.warmupQuestions[questionIndex].options.slice();
-    },
     submitForm() {
       console.log('allQuestionsAnswered:', this.allQuestionsAnswered);
       console.log('currentQuestionIndex:', this.currentQuestionIndex);
-      if (this.allQuestionsAnswered && this.currentQuestionIndex === this.warmupQuestions.length) {
+      if (this.allQuestionsAnswered && this.currentQuestionIndex === this.warmUpQuestions.length) {
         // Navigate to the "/experiment" page
         this.$router.push('/experiment');
       } else {
@@ -107,12 +50,12 @@ export default {
     },
     handleOptionClicked(option) {
       // Update the current question using reactivity
-      this.warmupQuestions[this.currentQuestionIndex].selectedOption = option;
+      this.warmUpQuestions[this.currentQuestionIndex].selectedOption = option;
     },
     handleAnswerChecked(index, isCorrect) {
-      if (index >= 0 && index < this.warmupQuestions.length) {
-        this.warmupQuestions[index] = {
-          ...this.warmupQuestions[index],
+      if (index >= 0 && index < this.warmUpQuestions.length) {
+        this.warmUpQuestions[index] = {
+          ...this.warmUpQuestions[index],
           correct: isCorrect,
           submitted: true,
         };
@@ -123,10 +66,8 @@ export default {
     moveToNextQuestion() {
       // Move to the next question
       this.currentQuestionIndex++;
-
-      // Check if all questions are answered correctly
-      if (this.allQuestionsAnsweredCorrectly && this.currentQuestionIndex === this.warmupQuestions.length) {
-        // Navigate to the "/experiment" page
+      if (this.allQuestionsAnswered) {
+        // Navigate to the "/experiment" page or show a "Start the Experiment" button
         this.$router.push('/experiment');
       }
     },
@@ -145,5 +86,15 @@ export default {
 </script>
 
 <style scoped>
-/* Add your styling here */
+h1 {
+  text-align: center;
+  margin: 1cm;
+  padding-top: 2em;
+}
+
+ p {
+  text-align: center;
+  font-size: 1em;
+  padding: 10px;
+ }
 </style>
