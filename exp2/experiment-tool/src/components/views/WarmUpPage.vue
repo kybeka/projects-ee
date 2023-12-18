@@ -16,7 +16,7 @@
       @answer-checked="handleAnswerChecked" @option-clicked="handleOptionClicked" @next-question="moveToNextQuestion" />
 
 
-    <button type="button" @click="submitForm" :disabled="!allQuestionsAnsweredCorrectly">Start the Experiment!</button>
+    <button  type="button" @click="submitForm" :disabled="!allQuestionsAnsweredCorrectly">Start the Experiment!</button>
   </div>
 </template>
 

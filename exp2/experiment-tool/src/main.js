@@ -6,6 +6,8 @@ import store from './store/store'
 import './assets/styles/main.css'; // Import main.css
 
 
+store.dispatch('loadParticipantID')
+
 
 createApp(App)
     .use(router)

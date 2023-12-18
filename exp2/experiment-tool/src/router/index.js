@@ -45,7 +45,7 @@ const routes = [
         path: "/warmup",
         component: WarmUp,
         beforeEnter: (to, from, next) => {
-            if (checkNavigationOrder(from, "/experiment")) {
+            if (checkNavigationOrder(from, "/form")) {
               next();
             } else {
               next("/experiment");

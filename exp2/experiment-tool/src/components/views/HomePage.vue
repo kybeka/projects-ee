@@ -22,16 +22,22 @@
         </div>
 
         <div class="consent-container">
-            <input type="checkbox" id="consentCheckbox" v-model="consentGiven" />
-            <label for="consentCheckbox">
-                By checking this checkbox, you acknowledge that you have read and understood the instructions and willingly
-                consent to participate in the experiment.
-            </label>
+            <div class="checkbox">
+                <input type="checkbox" id="consentCheckbox" v-model="consentGiven" />
+            </div>
+            <div class="consent-checkbox">
+                <label for="consentCheckbox">
+                    By checking this checkbox, you acknowledge that you have read and understood the instructions and
+                    willingly
+                    consent to participate in the experiment.
+                </label>
+            </div>
         </div>
 
 
         <div class="start-button-container" v-if="consentGiven">
-            <router-link to="/form" class="start-button">Click here to start the experiment</router-link>
+            <router-link to="/form" @click="startExperiment" class="start-button">Click here to start the
+                experiment</router-link>
         </div>
     </div>
 </template>
@@ -43,10 +49,23 @@ export default {
             consentGiven: false,
         };
     },
+    methods: {
+        startExperiment() {
+            this.$store.dispatch('generateParticipantID');
+            console.log('Participant ID:', this.$store.state.participantID);
+        },
+    }
 };
 </script>
   
 <style scoped>
+.consent-checkbox {
+    margin-left: 10px;
+}
+
+.checkbox {
+    margin-right: 10px;
+}
 
 img {
     padding: 0;
@@ -55,21 +74,15 @@ img {
 }
 
 .start-button-container {
-  height: 40px; /* Adjust the height based on your design */
-  margin-top: 30px; /* Add spacing between the text and the button */
+    height: 40px;
+    margin-top: 30px;
 }
 
 .instructions {
-    /* display: flex; */
-    /* justify-content: center;
-    align-items: center;
-    height: 100vh; Optional: To center vertically within the viewport */
-
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    /* margin: 2vh; */
     padding-left: 15vw;
     padding-right: 15vw;
     font-size: 1.2em;
@@ -93,7 +106,6 @@ label {
     color: #333;
     text-align: center;
     padding: 20px;
-    margin: 10vh;
     padding-left: 100px;
     padding-right: 100px;
     font-size: 1.2em;
@@ -112,7 +124,8 @@ h1 {
 .consent-container {
     text-align: left;
     display: inline-flex;
-    align-items: center; /* Optional: vertically align the items */
+    align-items: center;
+    /* Optional: vertically align the items */
 
 }
 

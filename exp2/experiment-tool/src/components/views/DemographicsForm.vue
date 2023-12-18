@@ -39,7 +39,7 @@
       </div>
 
       <div class="submit-but">
-        <button type="submit" class="submit-button" :disabled="!isFormValid">Next</button>
+        <router-link to="/warmup" @click="submitForm()" type="submit" class="submit-button" :disabled="!isFormValid">Next</router-link>
       </div>
      
     </form>
@@ -82,7 +82,21 @@ export default {
     submitForm() {
       // Handle form submission
       if (this.isFormValid) {
+        console.log('Form submitted', this.submitted);
         this.submitted = true;
+
+
+        
+        
+        // Save demographics answers to the store
+        this.$store.commit('saveDemographicsAnswers', {
+          participantID: this.$store.getters.participantID,
+          ...this.formData,
+        });
+        
+        console.log(this.formData);
+        
+        console.log(this.$store.getters.demographicsAnswers);
         // Proceed to the next page
         this.$router.push('/warmup');
       }
