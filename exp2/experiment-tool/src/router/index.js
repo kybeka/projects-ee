@@ -33,7 +33,7 @@ const routes = [
         path: "/experiment", 
         component: ExperimentPage,
         beforeEnter: (to, from, next) => {
-            if (checkNavigationOrder(from, "/form")) {
+            if (checkNavigationOrder(from, "/form") || checkNavigationOrder(from, "/warmup")) {
               next();
             } else {
               next("/form");
@@ -48,7 +48,7 @@ const routes = [
             if (checkNavigationOrder(from, "/form")) {
               next();
             } else {
-              next("/experiment");
+              next("/form");
             }
           }
     },

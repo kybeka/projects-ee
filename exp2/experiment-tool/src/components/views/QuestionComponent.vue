@@ -7,7 +7,7 @@
         :correct-answer="isCorrectOption(option)" :selected="isSelectedOption(option, question.selectedOption)"
         @option-clicked="handleOptionClicked(option)" />
     </div>
-    <button type="button" @click="handleAnswerChecked" :disabled="disableCheckAnswer">Check answer</button>
+    <button type="button" @click="handleCurrentAnswerChecked" :disabled="disableCheckAnswer">Check answer</button>
 
     <!-- Result message -->
     <p v-if="question.submitted && showResult">
@@ -24,7 +24,7 @@
       Next Question
     </button>
 
-    <!-- <button type="button" @click="submitForm" :disabled="!allQuestionsAnsweredCorrectly">
+    <!-- <button type="button" @click="submitForm" v-else-if="questionIndex == warmupQuestions.length" :disabled="!allQuestionsAnsweredCorrectly">
       Start the Experiment!
     </button> -->
   </div>
@@ -62,7 +62,7 @@ export default {
     isSelectedOption(option, selectedOption) {
       return option === selectedOption;
     },
-    handleAnswerChecked() {
+    handleCurrentAnswerChecked() {
       if (!this.question.submitted && !this.disableCheckAnswer) {
         // Check if the selected option is correct
         const isCorrect = this.isCorrectOption(this.question.selectedOption);

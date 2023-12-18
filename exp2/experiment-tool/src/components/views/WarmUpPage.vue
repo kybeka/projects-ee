@@ -4,24 +4,33 @@
     <h1>Welcome to the Warm-up</h1>
     <p>... <!-- (Your introductory text) --></p>
 
-    <!-- Iterate through each question -->
-    <!-- <QuestionComponent v-if="currentQuestionIndex < warmupQuestions.length" :key="currentQuestionIndex"
-      :question="warmupQuestions[currentQuestionIndex]" :shuffledOptions="shuffledOptions[currentQuestionIndex]"
-      :questionIndex="currentQuestionIndex" :warmupQuestions="warmupQuestions" @answer-checked="handleAnswerChecked" @option-clicked="handleOptionClicked"
-      @next-question="moveToNextQuestion" /> -->
-    <QuestionComponent v-if="currentQuestionIndex < warmupQuestions.length" :key="currentQuestionIndex"
-      :question="warmupQuestions[currentQuestionIndex]" :shuffledOptions="shuffledOptions[currentQuestionIndex]"
-      :questionIndex="currentQuestionIndex" :warmupQuestions="warmupQuestions"
-      :allQuestionsAnsweredCorrectly="allQuestionsAnsweredCorrectly" :currentQuestionIndex="currentQuestionIndex"
-      @answer-checked="handleAnswerChecked" @option-clicked="handleOptionClicked" @next-question="moveToNextQuestion" />
+    <QuestionComponent 
+      v-if="currentQuestionIndex < warmupQuestions.length" 
+      :key="currentQuestionIndex"
+      :question="warmupQuestions[currentQuestionIndex]" 
+      :shuffledOptions="getShuffledOptions(currentQuestionIndex)"
+      :questionIndex="currentQuestionIndex" 
+      :warmupQuestions="warmupQuestions"
+      :allQuestionsAnswered="allQuestionsAnswered" 
+      :currentQuestionIndex="currentQuestionIndex"
+      @answer-checked="handleAnswerChecked" 
+      @option-clicked="handleOptionClicked" 
+      @next-question="submitForm" />
 
+      <button
+      type="button"
+      @click="submitForm"
+      :disabled="!allQuestionsAnswered"
+      v-else-if="questionIndex == warmupQuestions.length"
+    >
+      {{ questionIndex === warmupQuestions.length ? 'Start the Experiment!' : 'Next Question' }}
+    </button>
 
-    <button  type="button" @click="submitForm" :disabled="!allQuestionsAnsweredCorrectly">Start the Experiment!</button>
   </div>
 </template>
 
 <script>
-import QuestionComponent from "@/components/views/QuestionComponent.vue"; // Update the path accordingly
+import QuestionComponent from "@/components/views/QuestionComponent.vue";
 
 export default {
   data() {
@@ -69,21 +78,26 @@ export default {
         },
       ],
       currentQuestionIndex: 0,
+      shuffledOptionsOnce:true,
     };
   },
   computed: {
-    shuffledOptions() {
-      return this.warmupQuestions.map((question) => this.shuffleArray(question.options.slice()));
-    },
-    allQuestionsAnsweredCorrectly() {
-      return this.warmupQuestions.every((question) => question.correct);
+    allQuestionsAnswered() {
+      return this.warmupQuestions.every((question) => question.submitted);
     },
   },
   methods: {
+    getShuffledOptions(questionIndex) {
+      if (this.shuffleOptionsOnce) {
+        this.shuffleOptionsOnce = false;
+        return this.shuffleArray([...new Set(this.warmupQuestions[questionIndex].options.slice())]);
+      }
+      return this.warmupQuestions[questionIndex].options.slice();
+    },
     submitForm() {
-      console.log('allQuestionsAnsweredCorrectly:', this.allQuestionsAnsweredCorrectly);
+      console.log('allQuestionsAnswered:', this.allQuestionsAnswered);
       console.log('currentQuestionIndex:', this.currentQuestionIndex);
-      if (this.allQuestionsAnsweredCorrectly && this.currentQuestionIndex === this.warmupQuestions.length) {
+      if (this.allQuestionsAnswered && this.currentQuestionIndex === this.warmupQuestions.length) {
         // Navigate to the "/experiment" page
         this.$router.push('/experiment');
       } else {
