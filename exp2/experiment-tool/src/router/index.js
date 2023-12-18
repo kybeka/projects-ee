@@ -5,7 +5,13 @@ import DemographicsForm from "@/components/views/DemographicsForm.vue";
 import ExperimentPage from "@/components/views/ExperimentPage.vue";
 import WarmUp from "@/components/views/WarmUpPage.vue";
 
-
+const checkNavigationOrder = (from, expectedFromPath) => {
+    if (from.path === expectedFromPath) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
 const routes = [
     {
@@ -14,15 +20,37 @@ const routes = [
     },
     { 
         path: "/form", 
-        component: DemographicsForm 
+        component: DemographicsForm,
+        beforeEnter: (to, from, next) => {
+            if (checkNavigationOrder(from, "/")) {
+              next();
+            } else {
+              next("/");
+            }
+          } 
     },
     { 
         path: "/experiment", 
-        component: ExperimentPage 
+        component: ExperimentPage,
+        beforeEnter: (to, from, next) => {
+            if (checkNavigationOrder(from, "/form")) {
+              next();
+            } else {
+              next("/form");
+            }
+          }
+         
     },
     {
         path: "/warmup",
-        component: WarmUp
+        component: WarmUp,
+        beforeEnter: (to, from, next) => {
+            if (checkNavigationOrder(from, "/experiment")) {
+              next();
+            } else {
+              next("/experiment");
+            }
+          }
     },
 ];
 
