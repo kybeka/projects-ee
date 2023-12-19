@@ -1,9 +1,11 @@
 <!-- ExperimentPage.vue -->
 <template>
   <div class="submit-experiment">
-    <h1>Welcome to the Experiment</h1>
+    <div v-if="!experimentFinished">
 
-    <QuestionComponent v-if="currentQuestionIndex < questions.length" :key="currentQuestionIndex"
+      <h1>Welcome to the Experiment</h1>
+      
+      <QuestionComponent v-if="currentQuestionIndex < questions.length" :key="currentQuestionIndex"
       :question="questions[currentQuestionIndex]" :shuffledOptions="shuffledOptions[currentQuestionIndex]"
       :questionIndex="currentQuestionIndex" :allQuestionsAnswered="allQuestionsAnswered"
       :currentQuestionIndex="currentQuestionIndex" @answer-checked="handleAnswerChecked"
@@ -11,10 +13,11 @@
       @option-clicked="handleOptionClicked" @next-question="moveToNextQuestion" :showResultMessage="false"
       :score="score" 
       @finish-clicked="finishExperiment"/>
+    </div>
 
 
     <!-- Thank you message and final score -->
-    <div v-if="experimentFinished">
+    <div class="finished" v-if="experimentFinished">
       <p>Thank you for completing the experiment!</p>
       <p>Your final score is: {{ score }} out of {{ questions.length }}.</p>
     </div>
@@ -96,4 +99,10 @@ export default {
 
 <style scoped>
 /* Add your styling here */
+
+.finished {
+  text-align: center;
+  margin: 1cm;
+  padding-top: 2em;
+}
 </style>

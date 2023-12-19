@@ -39,7 +39,7 @@
       </div>
 
       <div class="submit-but">
-        <router-link to="/warmup" @click="submitForm()" type="submit" class="submit-button" :disabled="!isFormValid">Next</router-link>
+        <button to="/warmup" @click="submitForm()" type="submit" class="submit-button" :disabled="!isFormValid">Next</button>
       </div>
      
     </form>

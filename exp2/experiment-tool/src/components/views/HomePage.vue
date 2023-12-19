@@ -12,9 +12,8 @@
                 identifiers are written in camelCase or kebab-case.
             </p>
             <p class="instruction">
-                Please read each identifier carefully and select the correct style. Take your time, and don't hesitate to
-                ask
-                if you have any questions.
+                <b>Please read each identifier carefully and select the correct style. Take your time, and don't hesitate to
+                ask if you have any questions.</b>
             </p>
             <p class="instruction">
                 Once ready, click on the button below to start the experiment. Your participation is greatly appreciated!

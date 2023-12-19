@@ -1,6 +1,17 @@
 import { createStore } from 'vuex';
 import { v4 as uuidv4 } from 'uuid';
 
+
+const shuffleArray = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+};
+
+
+
 export default createStore({
   state: {
     participantID: null,
@@ -111,6 +122,13 @@ export default createStore({
     saveDemographicsAnswers(state, answers) {
       state.demographicsAnswers.push(answers);
     },
+    shuffleOptions(state, questionIndex) {
+      const question = state.warmUpQuestions[questionIndex];
+      const shuffledOptions = shuffleArray(question.options.slice());
+      const correctAnswerIndex = shuffledOptions.indexOf(question.options[question.correctAnswerIndex]);
+      state.warmUpQuestions[questionIndex].options = shuffledOptions;
+      state.warmUpQuestions[questionIndex].correctAnswerIndex = correctAnswerIndex;
+    },
     // incrementScore(state) {
     //   state.score++;
     // }
@@ -129,6 +147,10 @@ export default createStore({
       if (storedID) {
         commit('setParticipantID', storedID);
       }
+    },
+
+    shuffleWarmUpQuestionOptions({ commit }, questionIndex) {
+      commit('shuffleOptions', questionIndex);
     },
 
 

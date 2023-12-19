@@ -16,29 +16,31 @@
 </template>
 
 <script>
-import QuestionComponent from "@/components/views/QuestionComponent.vue"; // Update the path accordingly
-import { mapState } from "vuex";
+import QuestionComponent from "@/components/views/QuestionComponent.vue";
+import { mapState, mapActions } from "vuex";
 
 export default {
   data() {
     return {
       currentQuestionIndex: 0,
-    }
+      shuffledOptions: [], // Store shuffled options for each question
+    };
   },
   computed: {
     ...mapState(['warmUpQuestions']),
-
-    shuffledOptions() {
-      return this.warmUpQuestions.map((question) => question.options.slice());
-    },
     allQuestionsAnswered() {
       return this.warmUpQuestions.every((question) => question.submitted);
     },
   },
   created() {
+    // Shuffle options for all questions when the component is created
+    this.warmUpQuestions.forEach((_, index) => {
+      this.shuffleWarmUpQuestionOptions(index);
+    });
     console.log('warmUpQuestions:', this.warmUpQuestions);
   },
   methods: {
+    ...mapActions(['shuffleWarmUpQuestionOptions']),
     submitForm() {
       console.log('allQuestionsAnswered:', this.allQuestionsAnswered);
       console.log('currentQuestionIndex:', this.currentQuestionIndex);
@@ -46,8 +48,9 @@ export default {
         // Navigate to the "/experiment" page
         this.$router.push('/experiment');
       } else {
-        // Move to the next question
+        // Move to the next question and shuffle options
         this.currentQuestionIndex++;
+        this.shuffledOptions[this.currentQuestionIndex] = this.shuffleArray(this.warmUpQuestions[this.currentQuestionIndex].options.slice());
       }
     },
     handleOptionClicked(option) {
@@ -66,8 +69,9 @@ export default {
       }
     },
     moveToNextQuestion() {
-      // Move to the next question
+      // Move to the next question and shuffle options
       this.currentQuestionIndex++;
+      this.shuffledOptions[this.currentQuestionIndex] = this.shuffleArray(this.warmUpQuestions[this.currentQuestionIndex].options.slice());
       if (this.allQuestionsAnswered) {
         // Navigate to the "/experiment" page or show a "Start the Experiment" button
         this.$router.push('/experiment');
