@@ -9,11 +9,12 @@
       :currentQuestionIndex="currentQuestionIndex" @answer-checked="handleAnswerChecked"
       :isWarmup="false"
       @option-clicked="handleOptionClicked" @next-question="moveToNextQuestion" :showResultMessage="false"
-      :score="score" />
+      :score="score" 
+      @finish-clicked="finishExperiment"/>
 
 
     <!-- Thank you message and final score -->
-    <div v-if="allQuestionsAnswered">
+    <div v-if="experimentFinished">
       <p>Thank you for completing the experiment!</p>
       <p>Your final score is: {{ score }} out of {{ questions.length }}.</p>
     </div>
@@ -29,6 +30,7 @@ export default {
     return {
       currentQuestionIndex: 0,
       score: 0,
+      experimentFinished: false,
     };
   },
   computed: {
@@ -71,14 +73,19 @@ export default {
       }
     },
     handleAllQuestionsAnswered() {
-      // Handle the final score and thank you message
-      // this.score = userCorrectCount;
-      this.allQuestionsAnswered = true;
+      this.finishExperiment();
+    },
+    finishExperiment() {
+      this.experimentFinished = true;
     },
 
     moveToNextQuestion() {
       // Move to the next question
-      this.currentQuestionIndex++;
+      if (this.currentQuestionIndex < this.questions.length - 1) {
+        this.currentQuestionIndex++;
+      } else {
+        this.finishExperiment();
+      }
     },
   },
   components: {

@@ -22,7 +22,7 @@
 
     <!-- Next Question button -->
     <div class="next-button">
-      <button type="button" class="next-start" v-if="question.submitted && showResult" @click="moveToNextQuestion"
+      <button type="button" class="next-start" v-if="question.submitted && showResult" @click="handleFinishClicked"
         :disabled="!allQuestionsAnswered && !question.submitted">
         {{ isWarmup && allQuestionsAnswered ? 'Start the Experiment!' : allQuestionsAnswered && !isWarmup ? 'Finish' : 'Next Question' }}
       </button>
@@ -104,11 +104,22 @@ export default {
         this.showResult = true;
       }
     },
-
-
     moveToNextQuestion() {
       this.$emit('next-question');
     },
+    handleFinishClicked() {
+      if (!this.isWarmup && this.allQuestionsAnswered) {
+        this.experimentFinished = true;
+        this.$emit('finish-clicked');
+      } else if (this.isWarmup && this.allQuestionsAnswered) {
+        this.$router.push('/experiment');
+        
+      } else {
+        // If it's a warm-up button, move to the next question
+        this.$emit('next-question');
+
+      }
+    }
   },
   components: {
     OptionComponent,
