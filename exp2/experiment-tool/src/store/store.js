@@ -17,6 +17,7 @@ export default createStore({
     participantID: null,
     demographicsAnswers: [], // Store demographics answers
     score: 0,
+    questionData: [],
     // Warm-up Questions
     warmUpQuestions: [
       {
@@ -129,6 +130,20 @@ export default createStore({
       state.warmUpQuestions[questionIndex].options = shuffledOptions;
       state.warmUpQuestions[questionIndex].correctAnswerIndex = correctAnswerIndex;
     },
+    shuffleOptionsExp(state, questionIndex) {
+      const question = state.questions[questionIndex];
+      const shuffledOptions = shuffleArray(question.options.slice());
+      const correctAnswerIndex = shuffledOptions.indexOf(question.options[question.correctAnswerIndex]);
+      state.questions[questionIndex].options = shuffledOptions;
+      state.questions[questionIndex].correctAnswerIndex = correctAnswerIndex;
+    },
+    // Inside mutations object
+    recordQuestionData(state, questionData) {
+      state.questionData.push(questionData);
+    },
+
+    //
+
     // incrementScore(state) {
     //   state.score++;
     // }
@@ -151,6 +166,12 @@ export default createStore({
 
     shuffleWarmUpQuestionOptions({ commit }, questionIndex) {
       commit('shuffleOptions', questionIndex);
+    },
+    shuffleQuestionOptions({ commit }, questionIndex) {
+      commit('shuffleOptionsExp', questionIndex);
+    },
+    recordQuestionData({ commit }, questionData) {
+      commit('recordQuestionData', questionData);
     },
 
 
