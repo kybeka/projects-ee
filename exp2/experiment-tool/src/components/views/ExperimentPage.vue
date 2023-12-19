@@ -44,6 +44,7 @@ export default {
       return this.questions.map((question) =>
         this.shuffleArray(question.options.slice())
       );
+      
     },
     allQuestionsAnswered() {
       return this.questions.every((question) => question.submitted);

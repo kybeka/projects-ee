@@ -33,7 +33,7 @@ export default {
     ...mapState(['warmUpQuestions']),
 
     shuffledOptions() {
-      return this.warmUpQuestions.map((question) => this.shuffleArray(question.options.slice()));
+      return this.warmUpQuestions.map((question) => question.options.slice());
     },
     allQuestionsAnswered() {
       return this.warmUpQuestions.every((question) => question.submitted);
