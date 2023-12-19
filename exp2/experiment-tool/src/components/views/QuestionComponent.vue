@@ -4,7 +4,7 @@
     <p class="question-text">{{ questionText }}</p>
     <div class="options-container">
       <div class="options-grid">
-        <OptionComponent v-for="(option, index) in shuffledOptions" :key="index" :value="option"
+        <OptionComponent v-for="(option, index) in question.options" :key="index" :value="option"
           :correct-answer="isCorrectOption(option)" :selected="isSelectedOption(option, question.selectedOption)"
           @option-clicked="handleOptionClicked(option)" />
       </div>
@@ -17,7 +17,6 @@
         <span v-else>&#10008;</span>
       </span>
       <span v-if="question.correct">Correct! </span>
-      <!-- put the correct answer later -->
       <span v-else>Incorrect, the correct answer is {{ correctAnswerText }}.</span>
     </p>
 
@@ -25,17 +24,9 @@
     <div class="next-button">
       <button type="button" class="next-start" v-if="question.submitted && showResult" @click="moveToNextQuestion"
         :disabled="!allQuestionsAnswered && !question.submitted">
-        {{ allQuestionsAnswered ? 'Start the Experiment!' : 'Next Question' }}
+        {{ isWarmup && allQuestionsAnswered ? 'Start the Experiment!' : allQuestionsAnswered && !isWarmup ? 'Finish' : 'Next Question' }}
       </button>
     </div>
-
-    <!-- Next Question button -->
-    <!-- <div class="next-button">
-      <button type="button" class="next-start" v-if="question.submitted && showResult && !allQuestionsAnswered"
-        @click="moveToNextQuestion" :disabled="!allQuestionsAnswered && !question.submitted">
-        {{ isWarmUpPage ? 'Start the Experiment!' : 'Next Question' }}
-      </button>
-    </div> -->
 
   </div>
 </template>
@@ -47,11 +38,11 @@ import { mapState } from 'vuex';
 export default {
   props: {
     question: Object,
-    shuffledOptions: Array,
     questionIndex: Number,
     warmUpQuestions: Array,
     allQuestionsAnswered: Boolean,
     currentQuestionIndex: Number,
+    isWarmup: Boolean,
     showResultMessage: {
       type: Boolean,
       default: true,
@@ -73,7 +64,7 @@ export default {
   },
   created() {
     console.log('QuestionComponent - question:', this.question);
-    console.log('QuestionComponent - shuffledOptions:', this.shuffledOptions);
+    console.log('QuestionComponent - options:', this.question.options);
   },
 
   data() {
@@ -102,9 +93,9 @@ export default {
         const isCorrect = this.isCorrectOption(this.question.selectedOption);
 
         if (isCorrect) {
-          this.$emit('answer-checked', this.questionIndex, 1);
+          this.$emit('answer-checked', this.questionIndex, 1, isCorrect);
         } else {
-          this.$emit('answer-checked', this.questionIndex, 0);
+          this.$emit('answer-checked', this.questionIndex, 0, isCorrect);
         }
 
         // Emit the result to the parent component

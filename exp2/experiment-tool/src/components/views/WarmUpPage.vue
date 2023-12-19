@@ -9,6 +9,7 @@
       :question="warmUpQuestions[currentQuestionIndex]" :shuffledOptions="shuffledOptions[currentQuestionIndex]"
       :questionIndex="currentQuestionIndex" :warmupQuestions="warmUpQuestions"
       :allQuestionsAnswered="allQuestionsAnswered" :currentQuestionIndex="currentQuestionIndex"
+      :isWarmup="true"
       @answer-checked="handleAnswerChecked" @option-clicked="handleOptionClicked" @next-question="moveToNextQuestion" />
 
       <!-- <router-link v-if="allQuestionsAnswered" :to="{ name: 'ExperimentPage' }">

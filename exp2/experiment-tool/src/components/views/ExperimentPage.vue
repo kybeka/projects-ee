@@ -3,20 +3,14 @@
   <div class="submit-experiment">
     <h1>Welcome to the Experiment</h1>
 
-    <QuestionComponent
-      v-if="currentQuestionIndex < questions.length"
-      :key="currentQuestionIndex"
-      :question="questions[currentQuestionIndex]"
-      :shuffledOptions="shuffledOptions[currentQuestionIndex]"
-      :questionIndex="currentQuestionIndex"
-      :allQuestionsAnswered="allQuestionsAnswered"
-      :currentQuestionIndex="currentQuestionIndex"
-      @answer-checked="handleAnswerChecked"
-      @option-clicked="handleOptionClicked"
-      @next-question="moveToNextQuestion"
-      :showResultMessage="false"
-      :score="score"
-    />
+    <QuestionComponent v-if="currentQuestionIndex < questions.length" :key="currentQuestionIndex"
+      :question="questions[currentQuestionIndex]" :shuffledOptions="shuffledOptions[currentQuestionIndex]"
+      :questionIndex="currentQuestionIndex" :allQuestionsAnswered="allQuestionsAnswered"
+      :currentQuestionIndex="currentQuestionIndex" @answer-checked="handleAnswerChecked"
+      :isWarmup="false"
+      @option-clicked="handleOptionClicked" @next-question="moveToNextQuestion" :showResultMessage="false"
+      :score="score" />
+
 
     <!-- Thank you message and final score -->
     <div v-if="allQuestionsAnswered">
@@ -39,12 +33,10 @@ export default {
   },
   computed: {
     ...mapState(['questions']),
-    
+
     shuffledOptions() {
-      return this.questions.map((question) =>
-        this.shuffleArray(question.options.slice())
-      );
-      
+      return this.questions.map(question => question.options.slice());
+
     },
     allQuestionsAnswered() {
       return this.questions.every((question) => question.submitted);
@@ -64,32 +56,29 @@ export default {
       // Update the current question using reactivity
       this.questions[this.currentQuestionIndex].selectedOption = option;
     },
-    handleAnswerChecked(index) {
+    handleAnswerChecked(index, score, isCorrect) {
       if (index >= 0 && index < this.questions.length) {
+        if(isCorrect) {
+          this.score++;
+        }
         this.questions[index] = {
           ...this.questions[index],
           submitted: true,
+          isCorrect: isCorrect,
         };
       } else {
         console.error(`Invalid question index: ${index}`);
       }
     },
-    handleAllQuestionsAnswered(userCorrectCount) {
-    // Handle the final score and thank you message
-    this.score += userCorrectCount;
-    this.allQuestionsAnswered = true;
-  },
+    handleAllQuestionsAnswered() {
+      // Handle the final score and thank you message
+      // this.score = userCorrectCount;
+      this.allQuestionsAnswered = true;
+    },
 
     moveToNextQuestion() {
       // Move to the next question
       this.currentQuestionIndex++;
-    },
-    shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-      return array;
     },
   },
   components: {

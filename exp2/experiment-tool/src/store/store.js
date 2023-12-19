@@ -5,6 +5,7 @@ export default createStore({
   state: {
     participantID: null,
     demographicsAnswers: [], // Store demographics answers
+    score: 0,
     // Warm-up Questions
     warmUpQuestions: [
       {
@@ -110,6 +111,9 @@ export default createStore({
     saveDemographicsAnswers(state, answers) {
       state.demographicsAnswers.push(answers);
     },
+    // incrementScore(state) {
+    //   state.score++;
+    // }
   },
   actions: {
 
@@ -126,6 +130,8 @@ export default createStore({
         commit('setParticipantID', storedID);
       }
     },
+
+
     // exportDataToJSON({ state }) {
     //   const jsonData = {
     //     participantID: state.participantID,
@@ -145,5 +151,6 @@ export default createStore({
   getters: {
     participantID: state => state.participantID,
     demographicsAnswers: state => state.demographicsAnswers,
+    score: state => state.score,
   },
 });
