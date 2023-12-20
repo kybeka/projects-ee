@@ -49,7 +49,7 @@ export default {
   props: {
     question: Object,
     questionIndex: Number,
-    warmUpQuestions: Array,
+    // warmUpQuestions: Array,
     allQuestionsAnswered: Boolean,
     currentQuestionIndex: Number,
     isWarmup: Boolean,
@@ -123,9 +123,11 @@ export default {
         // Emit the result to the parent component
         this.$emit('answer-checked', this.questionIndex, this.score, isCorrect, {
           isCorrect: isCorrect,
-          optionsGiven: this.question.options,  // Update this based on your data structure
+          optionsGiven: this.question.options,
         });
 
+        // Emit the result to the parent component for warnup page
+        this.$emit('answer-checked', this.questionIndex, isCorrect);
         this.showResult = true;
       }
     },

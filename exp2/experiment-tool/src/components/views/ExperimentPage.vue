@@ -2,18 +2,25 @@
 <template>
   <div class="submit-experiment">
     <div v-if="!experimentFinished">
-
       <h1>Welcome to the Experiment</h1>
-
-      <QuestionComponent v-if="currentQuestionIndex < questions.length" :key="currentQuestionIndex"
-        :question="questions[currentQuestionIndex]" 
+      <QuestionComponent
+        v-if="currentQuestionIndex < questions.length"
+        :key="currentQuestionIndex"
+        :question="questions[currentQuestionIndex]"
         :shuffledOptions="shuffledOptions[currentQuestionIndex]"
-        :isCorrect="isCorrect" 
-        :optionsGiven="optionsGiven" 
-        :questionIndex="currentQuestionIndex" :allQuestionsAnswered="allQuestionsAnswered"
-        :currentQuestionIndex="currentQuestionIndex" @answer-checked="handleAnswerChecked" :isWarmup="false"
-        @option-clicked="handleOptionClicked" @next-question="moveToNextQuestion" :showResultMessage="false"
-        :score="score" @finish-clicked="finishExperiment" />
+        :isCorrect="isCorrect"
+        :optionsGiven="optionsGiven"
+        :questionIndex="currentQuestionIndex"
+        :allQuestionsAnswered="allQuestionsAnswered"
+        :currentQuestionIndex="currentQuestionIndex"
+        @answer-checked="handleAnswerChecked"
+        :isWarmup="false"
+        @option-clicked="handleOptionClicked"
+        @next-question="moveToNextQuestion"
+        :showResultMessage="false"
+        :score="score"
+        @finish-clicked="finishExperiment"
+      />
     </div>
 
     <!-- Thank you message and final score -->
@@ -35,82 +42,38 @@ export default {
       currentQuestionIndex: 0,
       score: 0,
       experimentFinished: false,
-      shuffledOptions: [], // Store shuffled options for each question
+      shuffledOptions: [],
       startTime: 0,
       endTime: 0,
+      lastQuestionProcessed: false,
     };
   },
   computed: {
-    ...mapState(['questions']),
+    ...mapState(["questions"]),
     allQuestionsAnswered() {
       return this.questions.every((question) => question.submitted);
     },
   },
   created() {
-    // Shuffle the entire array of questions when the component is created
     this.shuffleArray(this.questions);
-
-    // Shuffle options for all questions when the component is created
     this.questions.forEach((_, index) => {
       this.shuffleQuestionOptions(index);
     });
   },
   methods: {
-    ...mapActions(['shuffleQuestionOptions', 'recordQuestionData']),
-    submitForm() {
-      this.endTime = new Date().getTime();
-      const timeTaken = this.endTime - this.startTime;
-
-      const currentQuestion = this.questions[this.currentQuestionIndex];
-
-      if (!currentQuestion) {
-        console.error('Current question is undefined. Skipping recordQuestionData.');
-        return;
-      }
-
-      const questionData = {
-        questionIndex: this.currentQuestionIndex,
-        questionOrder: this.currentQuestionIndex + 1,
-        questionText: currentQuestion.questionText,
-        optionsGiven: this.shuffledOptions[this.currentQuestionIndex],
-        correctAnswerIndex: currentQuestion.correctAnswerIndex,
-        selectedOption: currentQuestion.selectedOption,
-        isCorrect: currentQuestion.selectedOption === currentQuestion.options[currentQuestion.correctAnswerIndex],
-        timeTaken: timeTaken,
-      };
-
-      console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-      console.log(questionData)
-      this.recordQuestionData(questionData);
-
-      // Move to the next question
-      this.currentQuestionIndex++;
-
-      if (this.currentQuestionIndex < this.questions.length) {
-        this.shuffledOptions[this.currentQuestionIndex] = this.shuffleArray(
-          this.questions[this.currentQuestionIndex].options.slice()
-        );
-
-        this.startTime = new Date().getTime();
-      } else {
-        this.finishExperiment();
-      }
-    },
-
-
+    ...mapActions(["shuffleQuestionOptions", "recordQuestionData", "exportDataToJSON"]),
 
     handleOptionClicked(option) {
-      // Update the current question using reactivity
       this.questions[this.currentQuestionIndex].selectedOption = option;
       this.endTime = performance.now();
     },
+
     handleAnswerChecked(index, score, isCorrect) {
       if (index >= 0 && index < this.questions.length) {
         if (isCorrect) {
           this.score++;
         }
 
-        // Capture data before updating the question
         const questionData = {
           correctAnswerIndex: this.questions[index].correctAnswerIndex,
           optionsGiven: this.shuffledOptions[index],
@@ -123,7 +86,6 @@ export default {
           isCorrect: isCorrect,
         };
 
-        // Emit the data to the parent component
         this.$emit("answer-checked", index, this.score, isCorrect, questionData);
       } else {
         console.error(`Invalid question index: ${index}`);
@@ -131,13 +93,36 @@ export default {
     },
 
     finishExperiment() {
-      this.experimentFinished = true;
+      if (!this.lastQuestionProcessed) {
+        const timeTaken = this.endTime - this.startTime;
+        const optionsGiven = [...this.questions[this.currentQuestionIndex].options];
+
+        const questionData = {
+          questionIndex: this.currentQuestionIndex,
+          questionOrder: this.currentQuestionIndex + 1,
+          questionText: this.questions[this.currentQuestionIndex].questionText,
+          optionsGiven: optionsGiven,
+          correctAnswerIndex: this.questions[this.currentQuestionIndex].correctAnswerIndex,
+          selectedOption: this.questions[this.currentQuestionIndex].selectedOption,
+          isCorrect: this.questions[this.currentQuestionIndex].isCorrect,
+          timeTaken: timeTaken,
+        };
+
+        this.recordQuestionData(questionData);
+        this.lastQuestionProcessed = true;
+
+        this.$store.dispatch('updateScore', this.score);
+        this.$nextTick(async () => {
+          // this.updateScore(this.score);
+          await this.exportDataToJSON();
+          
+          this.experimentFinished = true;
+        });
+      }
     },
+
     moveToNextQuestion() {
-
-      // this.endTime = performance.now();
       const timeTaken = this.endTime - this.startTime;
-
       const optionsGiven = [...this.questions[this.currentQuestionIndex].options];
 
       const questionData = {
@@ -149,13 +134,10 @@ export default {
         selectedOption: this.questions[this.currentQuestionIndex].selectedOption,
         isCorrect: this.questions[this.currentQuestionIndex].isCorrect,
         timeTaken: timeTaken,
-        // isCorrect: currentQuestion.selectedOption === currentQuestion.options[currentQuestion.correctAnswerIndex],
-        // optionsGiven: this.shuffledOptions[this.currentQuestionIndex],
       };
-      console.log(questionData)
+
       this.recordQuestionData(questionData);
 
-      // Move to the next question
       if (this.currentQuestionIndex < this.questions.length - 1) {
         this.currentQuestionIndex++;
       } else {
@@ -164,15 +146,13 @@ export default {
 
       this.startTime = performance.now();
     },
+
     shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
       }
       return array;
-    },
-    exportDataToJSON() {
-      this.$store.dispatch('exportDataToJSON');
     },
   },
   components: {
@@ -182,8 +162,6 @@ export default {
 </script>
 
 <style scoped>
-/* Add your styling here */
-
 h1 {
   text-align: center;
   margin: 1cm;

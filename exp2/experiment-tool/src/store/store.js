@@ -135,8 +135,8 @@ export default createStore({
       state.questions[questionIndex].options = shuffledOptions;
       state.questions[questionIndex].correctAnswerIndex = correctAnswerIndex;
     },
-    incrementScore(state) {
-      state.score +=1;
+    updateScore(state, newScore) {
+      state.score = newScore;
     },
     // Inside mutations object
     recordQuestionData(state, questionData) {
@@ -168,6 +168,9 @@ export default createStore({
     recordQuestionData({ commit }, questionData) {
       commit('recordQuestionData', questionData);
     },
+    updateScore({commit}, newScore) {
+      commit('updateScore', newScore);
+    },
     exportDataToJSON({ state }) {
       // Flatten demographicsAnswers
       const flattenedDemographics = state.demographicsAnswers.map(demographics => ({
@@ -198,7 +201,7 @@ export default createStore({
       const jsonData = {
         participantID: state.participantID,
         demographicsAnswers: flattenedDemographics,
-        // score: state.score,
+        score: state.score,
         questionData: flattenedQuestionData,
       };
 
