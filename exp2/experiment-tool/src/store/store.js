@@ -135,6 +135,9 @@ export default createStore({
       state.questions[questionIndex].options = shuffledOptions;
       state.questions[questionIndex].correctAnswerIndex = correctAnswerIndex;
     },
+    incrementScore(state) {
+      state.score +=1;
+    },
     // Inside mutations object
     recordQuestionData(state, questionData) {
       state.questionData.push(questionData);

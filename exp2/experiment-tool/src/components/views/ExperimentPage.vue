@@ -102,6 +102,7 @@ export default {
     handleOptionClicked(option) {
       // Update the current question using reactivity
       this.questions[this.currentQuestionIndex].selectedOption = option;
+      this.endTime = performance.now();
     },
     handleAnswerChecked(index, score, isCorrect) {
       if (index >= 0 && index < this.questions.length) {
@@ -134,7 +135,7 @@ export default {
     },
     moveToNextQuestion() {
 
-      this.endTime = performance.now();
+      // this.endTime = performance.now();
       const timeTaken = this.endTime - this.startTime;
 
       const optionsGiven = [...this.questions[this.currentQuestionIndex].options];
