@@ -6,7 +6,10 @@
       <h1>Welcome to the Experiment</h1>
 
       <QuestionComponent v-if="currentQuestionIndex < questions.length" :key="currentQuestionIndex"
-        :question="questions[currentQuestionIndex]" :shuffledOptions="shuffledOptions[currentQuestionIndex]"
+        :question="questions[currentQuestionIndex]" 
+        :shuffledOptions="shuffledOptions[currentQuestionIndex]"
+        :isCorrect="isCorrect" 
+        :optionsGiven="optionsGiven" 
         :questionIndex="currentQuestionIndex" :allQuestionsAnswered="allQuestionsAnswered"
         :currentQuestionIndex="currentQuestionIndex" @answer-checked="handleAnswerChecked" :isWarmup="false"
         @option-clicked="handleOptionClicked" @next-question="moveToNextQuestion" :showResultMessage="false"
@@ -58,34 +61,42 @@ export default {
       this.endTime = new Date().getTime();
       const timeTaken = this.endTime - this.startTime;
 
+      const currentQuestion = this.questions[this.currentQuestionIndex];
+
+      if (!currentQuestion) {
+        console.error('Current question is undefined. Skipping recordQuestionData.');
+        return;
+      }
+
       const questionData = {
         questionIndex: this.currentQuestionIndex,
         questionOrder: this.currentQuestionIndex + 1,
-        questionText: this.questions[this.currentQuestionIndex].questionText,
-        optionsGiven: this.shuffledOptions[this.currentQuestionIndex], // Update this line
-        correctAnswerIndex: this.questions[this.currentQuestionIndex].correctAnswerIndex,
-        selectedOption: this.questions[this.currentQuestionIndex].selectedOption,
-        isCorrect: this.questions[this.currentQuestionIndex].isCorrect,
+        questionText: currentQuestion.questionText,
+        optionsGiven: this.shuffledOptions[this.currentQuestionIndex],
+        correctAnswerIndex: currentQuestion.correctAnswerIndex,
+        selectedOption: currentQuestion.selectedOption,
+        isCorrect: currentQuestion.selectedOption === currentQuestion.options[currentQuestion.correctAnswerIndex],
         timeTaken: timeTaken,
       };
 
-      // Check if the selected option is correct
-      questionData.isCorrect =
-        questionData.selectedOption ===
-        questionData.optionsGiven[questionData.correctAnswerIndex];
-
+      console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+      console.log(questionData)
       this.recordQuestionData(questionData);
 
       // Move to the next question
       this.currentQuestionIndex++;
+
       if (this.currentQuestionIndex < this.questions.length) {
         this.shuffledOptions[this.currentQuestionIndex] = this.shuffleArray(
           this.questions[this.currentQuestionIndex].options.slice()
         );
-      }
 
-      this.startTime = new Date().getTime();
+        this.startTime = new Date().getTime();
+      } else {
+        this.finishExperiment();
+      }
     },
+
 
 
     handleOptionClicked(option) {
@@ -118,23 +129,27 @@ export default {
       }
     },
 
-
     finishExperiment() {
       this.experimentFinished = true;
     },
     moveToNextQuestion() {
+
       this.endTime = new Date().getTime();
       const timeTaken = this.endTime - this.startTime;
+
+      const optionsGiven = [...this.questions[this.currentQuestionIndex].options];
 
       const questionData = {
         questionIndex: this.currentQuestionIndex,
         questionOrder: this.currentQuestionIndex + 1,
         questionText: this.questions[this.currentQuestionIndex].questionText,
-        optionsGiven: this.shuffledOptions[this.currentQuestionIndex],
+        optionsGiven: optionsGiven,
         correctAnswerIndex: this.questions[this.currentQuestionIndex].correctAnswerIndex,
         selectedOption: this.questions[this.currentQuestionIndex].selectedOption,
         isCorrect: this.questions[this.currentQuestionIndex].isCorrect,
         timeTaken: timeTaken,
+        // isCorrect: currentQuestion.selectedOption === currentQuestion.options[currentQuestion.correctAnswerIndex],
+        // optionsGiven: this.shuffledOptions[this.currentQuestionIndex],
       };
       console.log(questionData)
       this.recordQuestionData(questionData);

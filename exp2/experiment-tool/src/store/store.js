@@ -141,12 +141,6 @@ export default createStore({
     recordQuestionData(state, questionData) {
       state.questionData.push(questionData);
     },
-
-    //
-
-    // incrementScore(state) {
-    //   state.score++;
-    // }
   },
   actions: {
 

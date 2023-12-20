@@ -24,7 +24,8 @@
     <div class="next-button">
       <button type="button" class="next-start" v-if="question.submitted && showResult" @click="handleFinishClicked"
         :disabled="!allQuestionsAnswered && !question.submitted">
-        {{ isWarmup && allQuestionsAnswered ? 'Start the Experiment!' : allQuestionsAnswered && !isWarmup ? 'Finish' : 'Next Question' }}
+        {{ isWarmup && allQuestionsAnswered ? 'Start the Experiment!' : allQuestionsAnswered && !isWarmup ? 'Finish' :
+          'Next Question' }}
       </button>
     </div>
 
@@ -47,7 +48,7 @@ export default {
       type: Boolean,
       default: true,
     },
-    score:{
+    score: {
       type: Number,
       default: 0,
     },
@@ -86,20 +87,35 @@ export default {
     isSelectedOption(option, selectedOption) {
       return option === selectedOption;
     },
+    // handleCurrentAnswerChecked() {
+    //   if (!this.question.submitted) {
+    //     // Check if the selected option is correct
+
+    //     const isCorrect = this.isCorrectOption(this.question.selectedOption);
+
+    //     if (isCorrect) {
+    //       this.$emit('answer-checked', this.questionIndex, 1, isCorrect);
+    //     } else {
+    //       this.$emit('answer-checked', this.questionIndex, 0, isCorrect);
+    //     }
+
+    //     // Emit the result to the parent component
+    //     this.$emit('answer-checked', this.questionIndex, isCorrect);
+
+    //     this.showResult = true;
+    //   }
+
+    // },
     handleCurrentAnswerChecked() {
       if (!this.question.submitted) {
         // Check if the selected option is correct
-
         const isCorrect = this.isCorrectOption(this.question.selectedOption);
 
-        if (isCorrect) {
-          this.$emit('answer-checked', this.questionIndex, 1, isCorrect);
-        } else {
-          this.$emit('answer-checked', this.questionIndex, 0, isCorrect);
-        }
-
         // Emit the result to the parent component
-        this.$emit('answer-checked', this.questionIndex, isCorrect);
+        this.$emit('answer-checked', this.questionIndex, this.score, isCorrect, {
+          isCorrect: isCorrect,
+          optionsGiven: this.question.options,  // Update this based on your data structure
+        });
 
         this.showResult = true;
       }
@@ -113,7 +129,7 @@ export default {
         this.$emit('finish-clicked');
       } else if (this.isWarmup && this.allQuestionsAnswered) {
         this.$router.push('/experiment');
-        
+
       } else {
         // If it's a warm-up button, move to the next question
         this.$emit('next-question');
