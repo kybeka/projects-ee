@@ -198,7 +198,7 @@ export default createStore({
       const jsonData = {
         participantID: state.participantID,
         demographicsAnswers: flattenedDemographics,
-        score: state.score,
+        // score: state.score,
         questionData: flattenedQuestionData,
       };
 

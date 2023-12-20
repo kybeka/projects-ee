@@ -6,9 +6,12 @@
       programming. In this session, we'll cover both camelCase and kebab-case</p>
     <p>For each question, you'll see four options. Pick the one that adheres to the specified naming convention.</p>
     <QuestionComponent v-if="currentQuestionIndex < warmUpQuestions.length" :key="currentQuestionIndex"
-      :question="warmUpQuestions[currentQuestionIndex]" :shuffledOptions="shuffledOptions[currentQuestionIndex]"
-      :questionIndex="currentQuestionIndex" :warmupQuestions="warmUpQuestions"
-      :allQuestionsAnswered="allQuestionsAnswered" :currentQuestionIndex="currentQuestionIndex"
+      :question="warmUpQuestions[currentQuestionIndex]" 
+      :shuffledOptions="shuffledOptions[currentQuestionIndex]"
+      :questionIndex="currentQuestionIndex" 
+      :warmupQuestions="warmUpQuestions"
+      :allQuestionsAnswered="allQuestionsAnswered" 
+      :currentQuestionIndex="currentQuestionIndex"
       :isWarmup="true"
       @answer-checked="handleAnswerChecked" @option-clicked="handleOptionClicked" @next-question="moveToNextQuestion" />
 
