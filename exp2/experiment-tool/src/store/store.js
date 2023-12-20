@@ -167,23 +167,50 @@ export default createStore({
     recordQuestionData({ commit }, questionData) {
       commit('recordQuestionData', questionData);
     },
+    exportDataToJSON({ state }) {
+      // Flatten demographicsAnswers
+      const flattenedDemographics = state.demographicsAnswers.map(demographics => ({
+        participantID: demographics.participantID,
+        age: demographics.age,
+        gender: demographics.gender,
+        experience: demographics.experience,
+        englishLevel: demographics.englishLevel,
+      }));
 
+      // Flatten questionData with "question0", "question1", etc.
+      const flattenedQuestionData = state.questionData.reduce((acc, question) => {
+        const questionKey = `question${question.questionIndex}`;
+        acc[questionKey] = {
+          questionIndex: question.questionIndex,
+          questionOrder: question.questionOrder,
+          questionText: question.questionText,
+          optionsGiven: question.optionsGiven,
+          correctAnswerIndex: question.correctAnswerIndex,
+          selectedOption: question.selectedOption,
+          isCorrect: question.isCorrect,
+          timeTaken: question.timeTaken,
+        };
+        return acc;
+      }, {});
 
-    // exportDataToJSON({ state }) {
-    //   const jsonData = {
-    //     participantID: state.participantID,
-    //     // Include other state properties as needed
-    //   };
+      // Combine all data
+      const jsonData = {
+        participantID: state.participantID,
+        demographicsAnswers: flattenedDemographics,
+        score: state.score,
+        questionData: flattenedQuestionData,
+      };
 
-    //   const jsonString = JSON.stringify(jsonData, null, 2);
+      // Convert data to JSON string
+      const jsonString = JSON.stringify(jsonData, null, 2);
 
-    //   // Save the JSON string to a file
-    //   const blob = new Blob([jsonString], { type: 'application/json' });
-    //   const a = document.createElement('a');
-    //   a.href = URL.createObjectURL(blob);
-    //   a.download = 'exported_data.json';
-    //   a.click();
-    // },
+      // Save the JSON string to a file
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'exported_data.json';
+      a.click();
+    },
   },
   getters: {
     participantID: state => state.participantID,

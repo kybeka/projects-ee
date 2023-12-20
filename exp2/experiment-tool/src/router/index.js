@@ -36,7 +36,7 @@ const routes = [
             if (checkNavigationOrder(from, "/form") || checkNavigationOrder(from, "/warmup")) {
               next();
             } else {
-              next("/form");
+              next("/");
             }
           }
          
@@ -48,7 +48,7 @@ const routes = [
             if (checkNavigationOrder(from, "/form")) {
               next();
             } else {
-              next("/form");
+              next("/");
             }
           }
     },
