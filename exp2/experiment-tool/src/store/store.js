@@ -10,8 +10,6 @@ const shuffleArray = (array) => {
   return array;
 };
 
-
-
 export default createStore({
   state: {
     participantID: null,

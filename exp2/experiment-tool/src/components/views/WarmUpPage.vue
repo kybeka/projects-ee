@@ -12,7 +12,11 @@
       :isWarmup="true"
       @answer-checked="handleAnswerChecked" @option-clicked="handleOptionClicked" @next-question="moveToNextQuestion" />
 
+      <div v-if="allQuestionsAnswered && isWarmup && question.submitted">
+        <p>Now you are going to start the actual experiment. Remember that you can only click once to choose the correct answer.</p>
+      </div>
   </div>
+
 </template>
 
 <script>

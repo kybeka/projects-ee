@@ -134,7 +134,7 @@ export default {
     },
     moveToNextQuestion() {
 
-      this.endTime = new Date().getTime();
+      this.endTime = performance.now();
       const timeTaken = this.endTime - this.startTime;
 
       const optionsGiven = [...this.questions[this.currentQuestionIndex].options];
@@ -161,7 +161,7 @@ export default {
         this.finishExperiment();
       }
 
-      this.startTime = new Date().getTime();
+      this.startTime = performance.now();
     },
     shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {

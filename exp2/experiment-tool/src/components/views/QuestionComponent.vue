@@ -20,10 +20,19 @@
       <span v-else>Incorrect, the correct answer is {{ correctAnswerText }}.</span>
     </p>
 
+    <div v-if="isWarmup && allQuestionsAnswered" :disabled="!allQuestionsAnswered && !question.submitted">
+        <p>Now you are going to start the actual experiment. Remember that you can only click once to choose the correct
+          answer.</p>
+        </div>
+
     <!-- Next Question button -->
     <div class="next-button">
+
+      
+        <div class="spacer"></div>
       <button type="button" class="next-start" v-if="question.submitted && showResult" @click="handleFinishClicked"
         :disabled="!allQuestionsAnswered && !question.submitted">
+        
         {{ isWarmup && allQuestionsAnswered ? 'Start the Experiment!' : allQuestionsAnswered && !isWarmup ? 'Finish' :
           'Next Question' }}
       </button>
@@ -192,5 +201,10 @@ export default {
 div .next-button {
   display: flex;
   justify-content: center;
+}
+
+
+.spacer {
+  margin-bottom: 10px; /* Adjust the value as needed */
 }
 </style>
