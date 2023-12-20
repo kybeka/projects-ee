@@ -13,9 +13,8 @@
             </p>
             <p class="instruction">
                 <b>Please read each identifier carefully and select the correct style. Take your time, and don't hesitate to
-                ask if you have any questions.</b>
-            </p>
-            <p class="instruction">
+                    ask if you have any questions.</b>
+                    <br>
                 Once ready, click on the button below to start the experiment. Your participation is greatly appreciated!
             </p>
         </div>
@@ -118,6 +117,7 @@ h1 {
 
 .instruction {
     margin-bottom: 20px;
+    text-align: justify;
 }
 
 .consent-container {

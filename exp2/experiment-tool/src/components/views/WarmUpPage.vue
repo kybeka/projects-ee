@@ -2,24 +2,22 @@
 <template>
   <div class="submit-warmup">
     <h1>Welcome to the Warm-up</h1>
-    <p>Let's warm up with a set of questions designed to test your familiarity with different naming conventions in
-      programming. In this session, we'll cover both camelCase and kebab-case</p>
-    <p>For each question, you'll see four options. Pick the one that adheres to the specified naming convention.</p>
+    <div class="intro">
+      <p>Let's warm up with a set of questions designed to test your familiarity with different naming conventions in
+      programming. In this session, we'll cover both camelCase and kebab-case. <br> <br>
+      For each question, you'll see four options. Pick the one that adheres to the specified naming convention.</p>
+    </div>
     <QuestionComponent v-if="currentQuestionIndex < warmUpQuestions.length" :key="currentQuestionIndex"
-      :question="warmUpQuestions[currentQuestionIndex]" 
-      :shuffledOptions="shuffledOptions[currentQuestionIndex]"
-      :questionIndex="currentQuestionIndex" 
-      :warmupQuestions="warmUpQuestions"
-      :allQuestionsAnswered="allQuestionsAnswered" 
-      :currentQuestionIndex="currentQuestionIndex"
-      :isWarmup="true"
+      :question="warmUpQuestions[currentQuestionIndex]" :shuffledOptions="shuffledOptions[currentQuestionIndex]"
+      :questionIndex="currentQuestionIndex" :warmupQuestions="warmUpQuestions"
+      :allQuestionsAnswered="allQuestionsAnswered" :currentQuestionIndex="currentQuestionIndex" :isWarmup="true"
       @answer-checked="handleAnswerChecked" @option-clicked="handleOptionClicked" @next-question="moveToNextQuestion" />
 
-      <div v-if="allQuestionsAnswered && isWarmup && question.submitted">
-        <p>Now you are going to start the actual experiment. Remember that you can only click once to choose the correct answer.</p>
-      </div>
+    <div v-if="allQuestionsAnswered && isWarmup && question.submitted">
+      <p>Now you are going to start the actual experiment. Remember that you can only click once to choose the correct
+        answer.</p>
+    </div>
   </div>
-
 </template>
 
 <script>
@@ -105,9 +103,23 @@ h1 {
   padding-top: 2em;
 }
 
- p {
+p {
   text-align: center;
   font-size: 1em;
   padding: 10px;
- }
+}
+
+.intro {
+  display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fira Sans', sans-serif;
+    color: #333;
+    text-align: center;
+    padding: 20px;
+    padding-left: 100px;
+    padding-right: 100px;
+    font-size: 1.2em;
+}
 </style>

@@ -3,24 +3,13 @@
   <div class="submit-experiment">
     <div v-if="!experimentFinished">
       <h1>Welcome to the Experiment</h1>
-      <QuestionComponent
-        v-if="currentQuestionIndex < questions.length"
-        :key="currentQuestionIndex"
-        :question="questions[currentQuestionIndex]"
-        :shuffledOptions="shuffledOptions[currentQuestionIndex]"
-        :isCorrect="isCorrect"
-        :optionsGiven="optionsGiven"
-        :questionIndex="currentQuestionIndex"
-        :allQuestionsAnswered="allQuestionsAnswered"
-        :currentQuestionIndex="currentQuestionIndex"
-        @answer-checked="handleAnswerChecked"
-        :isWarmup="false"
-        @option-clicked="handleOptionClicked"
-        @next-question="moveToNextQuestion"
-        :showResultMessage="false"
-        :score="score"
-        @finish-clicked="finishExperiment"
-      />
+      <QuestionComponent v-if="currentQuestionIndex < questions.length" :key="currentQuestionIndex"
+        :question="questions[currentQuestionIndex]" :shuffledOptions="shuffledOptions[currentQuestionIndex]"
+        :isCorrect="isCorrect" :optionsGiven="optionsGiven" :questionIndex="currentQuestionIndex"
+        :allQuestionsAnswered="allQuestionsAnswered" :currentQuestionIndex="currentQuestionIndex"
+        @answer-checked="handleAnswerChecked" :isWarmup="false" @option-clicked="handleOptionClicked"
+        @next-question="moveToNextQuestion" :showResultMessage="false" :score="score"
+        @finish-clicked="finishExperiment" />
     </div>
 
     <!-- Thank you message and final score -->
@@ -115,7 +104,7 @@ export default {
         this.$nextTick(async () => {
           // this.updateScore(this.score);
           await this.exportDataToJSON();
-          
+
           this.experimentFinished = true;
         });
       }

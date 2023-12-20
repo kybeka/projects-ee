@@ -83,7 +83,7 @@ export default createStore({
       },
       {
         id: 'question6',
-        questionText: 'query indexes', 
+        questionText: 'query indexes',
         options: ['queryIndexes', 'queryInbexes', 'quaryIndexes', 'querryIndexes'],
         correctAnswerIndex: 0,
       },
@@ -112,7 +112,6 @@ export default createStore({
         correctAnswerIndex: 0,
       },
     ],
-
   },
   mutations: {
     setParticipantID(state, id) {
@@ -144,21 +143,18 @@ export default createStore({
     },
   },
   actions: {
-
     generateParticipantID({ commit }) {
       const newID = uuidv4();
       localStorage.setItem('participantID', newID);
       commit('setParticipantID', newID);
       console.log('Generated Participant ID:', newID);
     },
-
     loadParticipantID({ commit }) {
       const storedID = localStorage.getItem('participantID');
       if (storedID) {
         commit('setParticipantID', storedID);
       }
     },
-
     shuffleWarmUpQuestionOptions({ commit }, questionIndex) {
       commit('shuffleOptions', questionIndex);
     },
@@ -168,7 +164,7 @@ export default createStore({
     recordQuestionData({ commit }, questionData) {
       commit('recordQuestionData', questionData);
     },
-    updateScore({commit}, newScore) {
+    updateScore({ commit }, newScore) {
       commit('updateScore', newScore);
     },
     exportDataToJSON({ state }) {

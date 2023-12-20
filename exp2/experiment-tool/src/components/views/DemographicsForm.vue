@@ -39,9 +39,10 @@
       </div>
 
       <div class="submit-but">
-        <button to="/warmup" @click="submitForm()" type="submit" class="submit-button" :disabled="!isFormValid">Next</button>
+        <button to="/warmup" @click="submitForm()" type="submit" class="submit-button"
+          :disabled="!isFormValid">Next</button>
       </div>
-     
+
     </form>
 
     <div v-if="submitted">
@@ -85,17 +86,14 @@ export default {
         console.log('Form submitted', this.submitted);
         this.submitted = true;
 
-
-        
-        
         // Save demographics answers to the store
         this.$store.commit('saveDemographicsAnswers', {
           participantID: this.$store.getters.participantID,
           ...this.formData,
         });
-        
+
         console.log(this.formData);
-        
+
         console.log(this.$store.getters.demographicsAnswers);
         // Proceed to the next page
         this.$router.push('/warmup');
@@ -106,11 +104,11 @@ export default {
 </script>
 
 <style scoped>
-
 h2 {
   font-size: 40px;
   padding: 20px;
 }
+
 .demo-form {
   display: flex;
   flex-direction: column;

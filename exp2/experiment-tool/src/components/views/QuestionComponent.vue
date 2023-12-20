@@ -21,18 +21,14 @@
     </p>
 
     <div v-if="isWarmup && allQuestionsAnswered" :disabled="!allQuestionsAnswered && !question.submitted">
-        <p>Now you are going to start the actual experiment. Remember that you can only click once to choose the correct
-          answer.</p>
-        </div>
+      <p>Now you are going to start the actual experiment. Remember that you can only click once to choose the correct
+        answer.</p>
+    </div>
 
     <!-- Next Question button -->
     <div class="next-button">
-
-      
-        <div class="spacer"></div>
       <button type="button" class="next-start" v-if="question.submitted && showResult" @click="handleFinishClicked"
         :disabled="!allQuestionsAnswered && !question.submitted">
-        
         {{ isWarmup && allQuestionsAnswered ? 'Start the Experiment!' : allQuestionsAnswered && !isWarmup ? 'Finish' :
           'Next Question' }}
       </button>
@@ -49,7 +45,6 @@ export default {
   props: {
     question: Object,
     questionIndex: Number,
-    // warmUpQuestions: Array,
     allQuestionsAnswered: Boolean,
     currentQuestionIndex: Number,
     isWarmup: Boolean,
@@ -86,8 +81,10 @@ export default {
   methods: {
     handleOptionClicked(option) {
       if (!this.question.submitted) {
+
         this.$emit('option-clicked', option);
         this.handleCurrentAnswerChecked();
+
       }
     },
     isCorrectOption(option) {
@@ -96,25 +93,6 @@ export default {
     isSelectedOption(option, selectedOption) {
       return option === selectedOption;
     },
-    // handleCurrentAnswerChecked() {
-    //   if (!this.question.submitted) {
-    //     // Check if the selected option is correct
-
-    //     const isCorrect = this.isCorrectOption(this.question.selectedOption);
-
-    //     if (isCorrect) {
-    //       this.$emit('answer-checked', this.questionIndex, 1, isCorrect);
-    //     } else {
-    //       this.$emit('answer-checked', this.questionIndex, 0, isCorrect);
-    //     }
-
-    //     // Emit the result to the parent component
-    //     this.$emit('answer-checked', this.questionIndex, isCorrect);
-
-    //     this.showResult = true;
-    //   }
-
-    // },
     handleCurrentAnswerChecked() {
       if (!this.question.submitted) {
         // Check if the selected option is correct
@@ -136,9 +114,12 @@ export default {
     },
     handleFinishClicked() {
       if (!this.isWarmup && this.allQuestionsAnswered) {
+
         this.experimentFinished = true;
         this.$emit('finish-clicked');
+
       } else if (this.isWarmup && this.allQuestionsAnswered) {
+
         this.$router.push('/experiment');
 
       } else {
@@ -183,7 +164,6 @@ export default {
 
 .option:hover {
   background-color: #e0e0e0;
-  /* Change the color as needed */
 }
 
 .next-start {
@@ -203,10 +183,5 @@ export default {
 div .next-button {
   display: flex;
   justify-content: center;
-}
-
-
-.spacer {
-  margin-bottom: 10px; /* Adjust the value as needed */
 }
 </style>
