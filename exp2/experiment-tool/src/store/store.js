@@ -55,60 +55,70 @@ export default createStore({
         id: 'question1',
         questionText: 'jump left',
         options: ['jump-left', 'jump-lelt', 'junmp-left', 'junp-left'],
+        caseFormat: 'kebab1',
         correctAnswerIndex: 0,
       },
       {
         id: 'question2',
         questionText: 'jump left',
         options: ['jumpLeft', 'jumpLelt', 'jumnpLeft', 'junpLeft'],
+        caseFormat: 'camel1',
         correctAnswerIndex: 0,
       },
       {
         id: 'question3',
         questionText: 'algorithm numbers',
         options: ['algorithm-numbers', 'algortithm-numbers', 'algorithm-nunbers', 'algorithmn-numbers'],
+        caseFormat: 'kebab2',
         correctAnswerIndex: 0,
       },
       {
         id: 'question4',
         questionText: 'algorithm numbers',
         options: ['algorithmNumbers', 'algortithmNumbers', 'algorithmNunbers', 'algorithmnNumbers'],
+        caseFormat: 'camel2',
         correctAnswerIndex: 0,
       },
       {
         id: 'question5',
         questionText: 'query indexes',
         options: ['query-indexes', 'query-inbexes', 'quary-indexes', 'querry-indexes'],
+        caseFormat: 'kebab3',
         correctAnswerIndex: 0,
       },
       {
         id: 'question6',
         questionText: 'query indexes',
         options: ['queryIndexes', 'queryInbexes', 'quaryIndexes', 'querryIndexes'],
+        caseFormat: 'camel3',
         correctAnswerIndex: 0,
       },
       {
         id: 'question7',
         questionText: 'wording change',
         options: ['wording-change', 'wording-chagne', 'warding-change', 'wording-chane'],
+        caseFormat: 'kebab4',
         correctAnswerIndex: 0,
       },
       {
         id: 'question8',
         questionText: 'wording change',
         options: ['wordingChange', 'wordingChagne', 'wardingChange', 'wordingChane'],
+        caseFormat: 'camel4',
         correctAnswerIndex: 0,
       },
       {
         id: 'question9',
         questionText: 'packet size',
-        options: ['packet-size', 'packet-side', 'packets-size', 'paketSize'],
+        options: ['packet-size', 'packet-side', 'packets-size', 'paket-Size'],
+        caseFormat: 'kebab5',
         correctAnswerIndex: 0,
       },
       {
         id: 'question10',
         questionText: 'packet size',
         options: ['packetSize', 'packetSide', 'packetsSize', 'paketSize'],
+        caseFormat: 'camel5',
         correctAnswerIndex: 0,
       },
     ],
@@ -141,6 +151,8 @@ export default createStore({
     recordQuestionData(state, questionData) {
       state.questionData.push(questionData);
     },
+
+
   },
   actions: {
     generateParticipantID({ commit }) {
@@ -184,6 +196,7 @@ export default createStore({
           questionIndex: question.questionIndex,
           questionOrder: question.questionOrder,
           questionText: question.questionText,
+          caseFormat: question.caseFormat,
           optionsGiven: question.optionsGiven,
           correctAnswerIndex: question.correctAnswerIndex,
           selectedOption: question.selectedOption,
