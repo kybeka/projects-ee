@@ -1,0 +1,34 @@
+Experience,Summary,Mean,Standard_Deviation
+bachelor-inf,"       mean_duration  mean_accuracy
+count       4.000000            4.0
+mean     3483.050000           87.5
+std      1893.839755            5.0
+min      1676.100000           80.0
+25%      2707.200000           87.5
+50%      3052.050000           90.0
+75%      3827.900000           90.0
+max      6152.000000           90.0","mean_duration    3483.05
+mean_accuracy      87.50","mean_duration    1893.839755
+mean_accuracy       5.000000"
+more-three,"       mean_duration  mean_accuracy
+count       4.000000       4.000000
+mean     4229.175000      92.500000
+std      2851.866729       9.574271
+min      2330.400000      80.000000
+25%      2807.400000      87.500000
+50%      3055.800000      95.000000
+75%      4477.575000     100.000000
+max      8474.700000     100.000000","mean_duration    4229.175
+mean_accuracy      92.500","mean_duration    2851.866729
+mean_accuracy       9.574271"
+no-experience,"       mean_duration  mean_accuracy
+count       2.000000       2.000000
+mean     5978.000000      80.000000
+std      1797.324016      14.142136
+min      4707.100000      70.000000
+25%      5342.550000      75.000000
+50%      5978.000000      80.000000
+75%      6613.450000      85.000000
+max      7248.900000      90.000000","mean_duration    5978.0
+mean_accuracy      80.0","mean_duration    1797.324016
+mean_accuracy      14.142136"

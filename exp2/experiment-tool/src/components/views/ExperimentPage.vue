@@ -45,6 +45,7 @@ export default {
   },
   created() {
     this.shuffleArray(this.questions);
+    this.startTime = performance.now();
     this.questions.forEach((_, index) => {
       this.shuffleQuestionOptions(index);
     });
@@ -133,9 +134,7 @@ export default {
         this.currentQuestionIndex++;
       } else {
         this.finishExperiment();
-      }
-
-      this.startTime = performance.now();
+      }      
     },
 
     shuffleArray(array) {
